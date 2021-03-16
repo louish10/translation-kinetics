@@ -1,0 +1,23 @@
+Number of simulations: 500000
+-----------
+Proteins
+Mean
+Theory: 24.999999999999996
+Simulation: 25.000924
+
+Variance
+Theory: 108.33333333333331
+Simulation: 108.46952408527217
+-----------
+mRNAs
+Mean
+Theory: 5.0
+Simulation: 4.99858
+
+Variance
+Theory: 5.0
+Simulation: 5.01327601015202
+-----------
+Covariance
+Theory: 16.666666666666664
+Simulation: 16.70372071951918
