@@ -1,0 +1,22 @@
+After division-----------
+mRNA
+Mean
+Theory: 0.44444444106000447
+Simulation: 0.44460404865270137
+
+Variance
+Theory: 0.4444444410600045
+Simulation: 0.4448518519100785
+-----------
+Protein
+Mean
+Theory: 1.5370706384873118
+Simulation: 1.5371306677984662
+
+Variance
+Theory: 2.030230734770225
+Simulation: 2.030230734770225
+-----------
+Covariance
+Theory: 0.14169155465886923
+Simulation: 0.14141413557026544
