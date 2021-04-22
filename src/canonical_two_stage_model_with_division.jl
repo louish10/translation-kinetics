@@ -14,102 +14,50 @@ function main(args)
 
     write(stdout, "\n")
 
-    m_zero = mrna(0)
-    m_T = mrna(T)
-    A = alpha/gamma - m_zero
-
-    nbins = maximum([1, Int(maximum(m_after))])
-    histogram(m_after, nbins=Int(nbins), normed=true)
-    xlabel!("m")
-    ylabel!("P(m)")
-    m_zero = alpha/gamma*(1-exp(-gamma*T))/(2-exp(-gamma*T))
-    vline!([m_zero], label="theoretical mean")
-    vline!([mean(m_after)], label="statistical mean")
-    savefig(string(path, "/mrna_after_division.svg"))
-
-    mrna_stat_mean = mean(m_after)
-    stat_var = var(m_after)
-    theory_var = alpha/gamma - A
-
-    write(stdout, "\nStatistical mean of mrna after division: $mrna_stat_mean")
-    write(stdout, "\nTheoretical mean of mrna after division: $m_zero")
-    write(stdout, "\nStatistical variance of mrna after division: $stat_var")
-    write(stdout, "\nTheoretical variance of mrna after division: $theory_var")
-
-    statistical_covariance = cov(m_after, p_after)
-    cov_int_const = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
-    theoretical_covariance = beta*(alpha/(gamma*(gamma+delta)) - A/delta+cov_int_const)
-    write(stdout, "\nStatistical covariance after division: $statistical_covariance")
-    write(stdout, "\nTheoretical covariance after division: $theoretical_covariance")
-
-    nbins = maximum([1, Int(maximum(m_before))])
-    histogram(m_before, nbins=Int(nbins), normed=true)
-    xlabel!("m")
-    ylabel!("P(m)")
-    m_T = alpha/gamma*(1-exp(-gamma*T)) + m_zero*exp(-gamma*T)
-    vline!([m_T], label="theoretical mean")
-    vline!([mean(m_before)], label="statistical mean")
-    savefig(string(path, "/mrna_before_division.svg"))
-
-    nbins = maximum([1, Int(maximum(p_after))])
-    histogram(p_after, nbins=Int(nbins), normed=true)
-    xlabel!("p")
-    ylabel!("P(p)")
-    A = alpha/gamma - m_zero
-    p_zero = 1/(2-exp(-delta*T))*(beta*alpha/(delta*gamma)-A*beta/(delta-gamma)*exp(-gamma*T)-(beta*alpha/(gamma*delta)+A*beta/(gamma-delta))*exp(-delta*T))
-    vline!([p_zero], label="theoretical mean")
-    vline!([mean(p_after)], label="statistical mean")
-    savefig(string(path, "/protein_after_division.svg"))
-
-    nbins = maximum([1, Int(maximum(p_before))])
-    histogram(p_before, nbins=Int(nbins), normed=true)
-    xlabel!("p")
-    ylabel!("P(p)")
-    p_T = beta*alpha/(delta*gamma) - A*beta/(delta-gamma)*exp(-gamma*T) + (p_zero - beta*alpha/(gamma*delta)-A*beta/(gamma-delta))*exp(-delta*T)
-    vline!([p_T], label="theoretical mean")
-    vline!([mean(p_before)], label="statistical mean")
-    savefig(string(path, "/protein_before_division.svg"))
-
-    protein_stat_var = var(p_after)
-    protein_int_const = 1/(4-exp(-2*delta*T))*(F(cov_int_const, T) - 4*F(cov_int_const, 0) + p_T)
-    protein_theory_var = F(cov_int_const, 0) + protein_int_const
-
     print_summary(p_before, p_after, m_before, m_after)
 end
 
 function print_summary(p_before, p_after, m_before, m_after)
-    mrna_after_stat_mean = mean(m_after)
-    m_zero = alpha/gamma*(1-exp(-gamma*T))/(2-exp(-gamma*T))
+    # mRNA
+    m_zero = mrna(0)
     A = alpha/gamma - m_zero
+    m_T = mrna(T)
+    mrna_after_stat_mean = mean(m_after)
+
     mrna_after_stat_var = var(m_after)
-    mrna_after_theory_var = alpha/gamma - A 
-
-    covar_after_stat = cov(m_after, p_after)
-    c_prime = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
-    covar_after_theory = beta*(alpha/(gamma*(gamma+delta)) - A/delta+c_prime)
-    covar_before_theory = beta*(alpha/(gamma*(gamma+delta)) - A/delta*exp(-gamma*T)+ c_prime*exp(-(gamma+delta)*T))
-    covar_before_stat = cov(m_before, p_before)
-
-    p_after_stat_mean = mean(p_after)
-    p_zero = 1/(2-exp(-delta*T))*(beta*alpha/(delta*gamma)-A*beta/(delta-gamma)*exp(-gamma*T)-(beta*alpha/(gamma*delta)+A*beta/(gamma-delta))*exp(-delta*T))
-    p_T = beta*alpha/(delta*gamma) - A*beta/(delta-gamma)*exp(-gamma*T) + (p_zero - beta*alpha/(gamma*delta)-A*beta/(gamma-delta))*exp(-delta*T)
-    p_after_stat_var = var(p_after)
-    c_double_prime = 1/(4-exp(-2*delta*T))*(F(c_prime, T) - 4*F(c_prime, 0) + p_T)
-    p_after_theory_var = F(c_prime, 0) + c_double_prime
-
+    mrna_after_theory_var = mrna_variance(0)
     mrna_before_stat_mean = mean(m_before)
-    m_T = alpha/gamma*(1-exp(-gamma*T)) + m_zero*exp(-gamma*T)
 
-    mrna_before_theory_var = alpha/gamma - A*exp(-gamma*T)
+    mrna_before_theory_var = mrna_variance(T)
     mrna_before_stat_var = var(m_before)
+
+    # Covariance
+    covar_before_theory = covariance(T)
+    covar_after_theory = covariance(0)
+    covar_before_stat = cov(m_before, p_before)
+    covar_after_stat = cov(m_after, p_after)
+
+    # Protein
+    p_before_stat_mean = mean(p_before)
+    p_after_stat_mean = mean(p_after)
+
+    p_zero = p(0)
+    p_T = p(T)
+
+    p_after_stat_var = var(p_after)
+    p_after_theory_var = protein_variance(0)
+
+    p_before_theory_var = protein_variance(T)
+    p_before_stat_var = var(p_before)
+
 
     filename = string(path, "/results.txt")
     touch(filename)
     open(filename, "w") do io
-        write(io, "After division")
+        write(io, "After division\n")
         write(io, "-----------\n")
 
-        write(io, "mRNA\n")
+        write(io, "mRNA\n\n")
         write(io, "Mean\n")
         write(io, "Theory: $m_zero\n")
         write(io, "Simulation: $mrna_after_stat_mean\n")
@@ -119,12 +67,12 @@ function print_summary(p_before, p_after, m_before, m_after)
 
         write(io, "-----------\n")
 
-        write(io, "Protein\n")
+        write(io, "Protein\n\n")
         write(io, "Mean\n")
         write(io, "Theory: $p_zero\n")
         write(io, "Simulation: $p_after_stat_mean\n")
         write(io, "\nVariance\n")
-        write(io, "Theory: $p_after_stat_var\n")
+        write(io, "Theory: $p_after_theory_var\n")
         write(io, "Simulation: $p_after_stat_var\n")
 
         write(io, "-----------\n")
@@ -133,17 +81,30 @@ function print_summary(p_before, p_after, m_before, m_after)
         write(io, "Theory: $covar_after_stat\n")
         write(io, "Simulation: $covar_after_theory\n")
 
-        write(io, "-----------\n")
+        write(io, "-----------\n\n")
         write(io, "Before division\n")
         write(io, "-----------\n")
 
-        write(io, "mRNA\n")
+        write(io, "mRNA\n\n")
         write(io, "Mean\n")
         write(io, "Theory: $m_T\n")
         write(io, "Simulation: $mrna_before_stat_mean\n")
         write(io, "\nVariance\n")
         write(io, "Theory: $mrna_before_theory_var\n")
         write(io, "Simulation: $mrna_before_stat_var\n")
+
+        write(io, "-----------\n")
+
+        write(io, "Protein\n\n")
+        write(io, "Mean\n")
+        write(io, "Theory: $p_T\n")
+        write(io, "Simulation: $p_before_stat_mean\n")
+
+        write(io, "\nVariance\n")
+        write(io, "Theory: $p_before_theory_var\n")
+        write(io, "Simulation: $p_before_stat_var\n")
+
+        write(io, "-----------\n")
 
         write(io, "Covariance\n")
         write(io, "Theory: $covar_before_stat\n")
@@ -155,15 +116,17 @@ function print_summary(p_before, p_after, m_before, m_after)
         approx_covar_zero = approximate_covariance(0)
         c_double_prime_approx = alpha*beta/gamma * (beta/gamma*T-5*beta/(6*gamma^2)+T+1/gamma)
         approx_protein_var_zero = approximate_protein_variance(0)
+        approx_protein_var_T = approximate_protein_variance(T)
         approx_protein_mean_zero = approximate_protein_mean(0)
         approx_protein_mean_T = approximate_protein_mean(T)
 
-        write(io, "-----------\n")
-        write(io, "Approximations\n")
+        write(io, "-----------\n\n")
+        write(io, "Approximations\n\n")
         write(io, "mRNA variance after division: $approx_mrna_var_zero\n")
         write(io, "mRNA variance before division: $approx_mrna_var_T\n")
         write(io, "covariance before division: $approx_covar_T\n")
         write(io, "covariance after division: $approx_covar_zero\n")
+        write(io, "protein variance before division: $approx_protein_var_T\n")
         write(io, "protein variance after division: $approx_protein_var_zero\n")
         write(io, "protein mean before division: $approx_protein_mean_T\n")
         write(io, "protein mean after division: $approx_protein_mean_zero\n")
@@ -171,28 +134,51 @@ function print_summary(p_before, p_after, m_before, m_after)
 end
 
 function F(c_prime, t)
-    m_zero = alpha/gamma*(1-exp(-gamma*T))/(2-exp(-gamma*T))
+    m_zero = mrna(0)
     A = alpha/gamma - m_zero
-    p_zero = 1/(2-exp(-delta*T))*(beta*alpha/(delta*gamma)-A*beta/(delta-gamma)*exp(-gamma*T)-(beta*alpha/(gamma*delta)+A*beta/(gamma-delta))*exp(-delta*T))
+    p_zero = p(0)
     B = p_zero - beta*alpha/(gamma*delta) - A*beta/(gamma-delta)
     
     return beta^2*(alpha/(gamma*delta*(gamma+delta))-2*A/(delta*(2*delta - gamma))*exp(-gamma*t) + 2*c_prime/(delta-gamma)*exp(-(gamma+delta)*t)) + beta*alpha/(gamma*delta) - A*beta/(2*delta-gamma)*exp(-gamma*t) + beta*delta*A/((gamma-delta)*(2*delta-gamma))*exp(-gamma*t) + B*exp(-delta*t)
 end
 
 function mrna(t)
-    return alpha/beta*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
+    return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
 end
 
 function mrna_variance(t)
     return alpha/gamma*(1-exp(-gamma* t)/(2-exp(-gamma * T)))
 end
 
+function p(t)
+    A = alpha/gamma - mrna(0)
+    p_zero = 1/(2-exp(-delta*T))*(beta*alpha/(delta*gamma)-A*beta/(delta-gamma)*exp(-gamma*T)-(beta*alpha/(gamma*delta)+A*beta/(gamma-delta))*exp(-delta*T))
+    return beta*alpha/(delta*gamma) + A*beta/(gamma-delta)*exp(-gamma*t) + (p_zero - beta*alpha/(gamma*delta)-A*beta/(gamma-delta))*exp(-delta*t)
+end
+
+function protein_variance(t)
+    A = alpha/gamma - mrna(0)
+    c_prime = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
+    c_double_prime = 1/(4-exp(-2*delta*T))*(F(c_prime, T) - 4*F(c_prime, 0) + p(T))
+    return F(c_prime, t) + c_double_prime*exp(-2*delta*t)
+end
+
+function covariance(t)
+    A = alpha/gamma - mrna(0)
+    c_prime = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
+
+    return beta*(alpha/(gamma*(gamma+delta)) - A/delta*exp(-gamma*t)+ c_prime*exp(-(gamma+delta)*t))
+end
+
 function approximate_covariance(t)
-    return beta*alpha/gamma*(1/gamma - t*exp(-gamma*t)/(2-exp(-gamma*T)) - exp(-gamma * t)/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma*T)/(2-exp(-gamma*T))))
+    D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
+    return beta*alpha/gamma*(1/gamma - t*exp(-gamma*t)/(2-exp(-gamma*T)) - exp(-gamma * t)*D)
 end
 
 function approximate_protein_mean(t)
-    return alpha*beta/gamma*(t + T + 1/gamma*(1+exp(gamma*(T-t))-exp(gamma*T))/(2-exp(-gamma*T)))
+    A = alpha/gamma*(1/(2-exp(-gamma * T)))
+    c = beta*alpha*T/gamma - 2*beta*A/gamma + beta*A/gamma*exp(-gamma * T)
+    return beta*alpha/gamma * (t+T+1/gamma*(exp(-gamma*t) + exp(-gamma * T) - 2)/(2-exp(-gamma*T)))
 end
 
 function approximate_protein_variance(t)
@@ -201,7 +187,10 @@ function approximate_protein_variance(t)
 end
 
 function approximate_F(t)
-    2*beta^2*alpha/gamma*(t/gamma - 1/(2-exp(-gamma*T))*1/gamma*(1-t)*exp(-gamma*t) + 1/gamma*exp(-gamma*t)/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma*T)/(2-exp(-gamma*T)))) + beta*alpha/gamma * (t + 1/gamma*exp(-gamma * t)/(2-exp(-gamma*T)))
+    A = alpha/gamma - mrna(0)
+    D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
+    #return 2*beta^2*alpha/gamma * (t/gamma + (gamma*t + 1)*exp(-gamma * t)/(gamma^2*(2-exp(-gamma*T))) + exp(-gamma*t)/gamma * D) + beta*alpha*t/gamma + beta*A/gamma * exp(-gamma * t)
+    return beta*alpha/gamma * ((2*beta/gamma+1)*t + exp(-gamma*t)/(2-exp(-gamma*T))*(2*beta*(gamma*t + 1)+gamma)/(gamma^2) + 2*beta*exp(-gamma*t)/gamma*D)
 end
 
 function simulate_network()

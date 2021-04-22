@@ -1,0 +1,64 @@
+After division
+-----------
+mRNA
+
+Mean
+Theory: 0.40440186090247726
+Simulation: 0.40422173536682227
+
+Variance
+Theory: 0.40440186090247726
+Simulation: 0.40421034231537156
+-----------
+Protein
+
+Mean
+Theory: 0.9272173260460477
+Simulation: 0.9283868923851254
+
+Variance
+Theory: 1.2197345376715703
+Simulation: 1.2231295287742727
+-----------
+Covariance
+Theory: 0.12015240805967543
+Simulation: 0.12116138585188878
+-----------
+
+Before division
+-----------
+mRNA
+
+Mean
+Theory: 0.8088037218049544
+Simulation: 0.8086007567577215
+
+Variance
+Theory: 0.8088037218049544
+Simulation: 0.80691448700186
+-----------
+Protein
+
+Mean
+Theory: 1.8544346520920953
+Simulation: 1.8556527035348083
+
+Variance
+Theory: 3.024503498594072
+Simulation: 3.0295779659772326
+-----------
+Covariance
+Theory: 0.48190455351775036
+Simulation: 0.4846455434073959
+-----------
+
+Approximations
+
+mRNA variance after division: 0.40440186090247726
+mRNA variance before division: 0.8088037218049544
+covariance before division: 0.4850005926158486
+covariance after division: 0.12125014815396225
+protein variance before division: 3.974598266301779
+protein variance after division: 1.2343714651592514
+protein mean before division: 0.962887594335227
+protein mean after division: 1.6212676884338755
