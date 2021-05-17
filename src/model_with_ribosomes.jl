@@ -303,7 +303,8 @@ function mrna(t)
 end
 
 function p(t)
-    alpha*beta*rho/(2*gamma^3*(2*exp(gamma*T)-1)) * (2 + 4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma) + 2*exp(T*gamma)*(-2 + gamma*(t^2*gamma + T*(-2 + 2*t*gamma + 3*T*gamma))))
+    #alpha*beta*rho/(2*gamma^3*(2*exp(gamma*T)-1)) * (2 + 4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma) + 2*exp(T*gamma)*(-2 + gamma*(t^2*gamma + T*(-2 + 2*t*gamma + 3*T*gamma))))
+    return alpha*beta*(2+4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma)+2*exp(T*gamma)*(-2+gamma*(t^2*gamma+T*(-2+2*t*gamma+3*T*gamma))))*rho / (2 * (-1 + 2*exp(T*gamma))*gamma^3)
 end
 
 function r(t)
@@ -319,8 +320,7 @@ function r_var(t)
 end
 
 function p_var(t)
-    return exp(-2*gamma*t)*alpha*beta*rho/(6*(1-2*exp(gamma*T))^2*(4*exp(T*gamma)-1)*gamma^5)*(-3*exp(2*T*gamma)*alpha*beta*(2*(t+T)*gamma+3)+12*exp(3*T*gamma)*alpha*beta*(2*(t+T)*gamma+3)+4*exp(2*t*gamma+3*T*gamma)*(4*(gamma*(3*gamma*t^2+T*(6*(t+T)*gamma-5))-5)*gamma^2+alpha*beta*(2*gamma*(4*t*(t^2+3*T*t+3*T^2)*gamma^2-2*T*(8*t+3*T)*gamma-16*t+5*T)+31)+4*beta*(gamma*(-6*gamma*t^2+4*(t^2+3*T*t+3*T^2)*gamma^2*t-15*T-12*T*(t+T)*gamma)-9)*rho)-exp(2*(t+T)*gamma)*(4*(gamma*(15*gamma*t^2+T*(30*(t+T)*gamma-31))-23)*gamma^2+alpha*beta*(2*gamma*(20*t*(t^2+3*T*t+3*T^2)*gamma^2-2*T*(40*t+9*T)*gamma-64*t+21*T)+95)+4*beta*(gamma*(9*gamma^2*T^3+3*gamma*(20*t*gamma-11)*T^2+6*(10*t*gamma*(t*gamma-1)-7)*T+10*t^2*gamma*(2*t*gamma-3))-18)*rho)-4*exp((t+2T)*gamma)*(alpha*beta*(9*(t+T)^2*gamma^2-12*T*gamma-26)+18*beta*rho+3*gamma*((t+T)*gamma+1)*(3*gamma+beta*(6*t+14*T+3*(t^2+2*T*t-T^2)*gamma)*rho))+16*exp((t+3*T)*gamma)*(alpha*beta*(3*(t+T)^2*gamma^2-4*T*gamma-10)+9*beta*rho+3*gamma*((t+T)*gamma^2+gamma+beta*(t*(t+T)*(t+2*T)*gamma^2+(t+2*T)*(3*t+2*T)*gamma+3*t+5*T)*rho))+2*exp((2*t+T)*gamma)*(alpha*beta*(8*t*(t^2+3*T*t+3*T^2)*gamma^3-T*(32*t+3*T)*gamma^2+4*(T-5*t)*gamma+8)+gamma*(gamma*(gamma*(12*gamma*t^2+T*(24*(t+T)*gamma-29))-17)+beta*(9*gamma^2*T^3+3*gamma*(16*t*gamma-3)*T^2+12*(4*t*gamma*(t*gamma-1)-1)*T+8*t^2*gamma*(2*t*gamma-3))*rho))+2*exp((t+T)*gamma)*(alpha*beta*(3*(t+T)^2*gamma^2-4*T*gamma-8)+3*gamma*((t+T)*((t-T)*(t+3*T)*beta*rho+1)*gamma^2+(3*t+T)*(t+3*T)*beta*rho*gamma+gamma+4*T*beta*rho))-exp(2*t*gamma)*gamma*(2*beta*gamma^2*(alpha+2*rho)*t^3+3*gamma*(gamma^2+2*T*beta*(alpha+2*rho)*gamma-2*beta*rho)*t^2+2*(alpha*beta*(T*gamma*(3*T*gamma-4)-2)+3*T*gamma*(gamma^2+2*beta*(T*gamma-1)*rho))*t+2*gamma*(T*gamma*(3*T*gamma-4)-2)))
-
+return (alpha*beta*rho*exp(-gamma*t))/(18*gamma^5*(1-2*exp(gamma*T))^2)*(exp(gamma*t)*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-4*gamma*T*(3*t+4*T)-6*t+8*T)+25)-2*beta*rho*(gamma*(3*gamma*t^2*(3-2*gamma*t)+6*gamma*T^2*(7-3*gamma*t)-18*T*(gamma*t-2)*(gamma*t+1)+4*gamma^2*T^3)+18)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-4))-2))-4*exp(gamma*(t+T))*(beta*rho*(gamma*(6*gamma*t^2*(2*gamma*t-3)+9*gamma*T^2*(4*gamma*t-7)+36*T*(gamma*t-2)*(gamma*t+1)+10*gamma^2*T^3)-54)+2*alpha*beta*(3*gamma^3*t^3+9*gamma^3*t^2*T+3*gamma*t*(gamma*T*(3*gamma*T-4)-3)+gamma*T*(gamma*T*(7*gamma*T-13)+3)+13)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-3))-2))+4*exp(gamma*(t+2*T))*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-2*gamma*T*(6*t+5*T)-12*t+T)+31)+2*beta*rho*(gamma*(3*gamma*t^2*(2*gamma*t-3)+3*gamma*T^2*(6*gamma*t-7)+18*T*(gamma*t-2)*(gamma*t+1)+14*gamma^2*T^3)-36)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-2))-2))+12*exp(2*gamma*T)*(18*beta*rho+3*gamma*(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho*t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-10))-6*exp(gamma*T) *(18*beta*rho+3*gamma *(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho* t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-8))+9*alpha*beta*exp(-(gamma*(t-2*T)))*(2*gamma*(t+T)+3))
 end
 
 function m_r_covar(t)
@@ -332,7 +332,10 @@ function p_r_covar(t)
 end
 
 function m_p_covar(t)
-    exp(-t*gamma)*alpha*beta*rho*(2*exp(t*gamma)*(gamma*(t+T)-1)-12*exp(gamma*(t+T))*(-1 +(t+T)*gamma)+16*exp((t+2*T)*gamma)*(-1+(t+T)*gamma)-4*exp(2*T*gamma)*(-3 + 2*T*gamma + t*(t+2T)*gamma^2)+exp(T*gamma)*(-6 +4*T*gamma + (t-T)*(t+3*T)*gamma^2))/(2*(1-6*exp(T*gamma)+8*exp(2*T*gamma))*gamma^3)
+    #exp(-t*gamma)*alpha*beta*rho*(2*exp(t*gamma)*(gamma*(t+T)-1)-12*exp(gamma*(t+T))*(-1 +(t+T)*gamma)+16*exp((t+2*T)*gamma)*(-1+(t+T)*gamma)-4*exp(2*T*gamma)*(-3 + 2*T*gamma + t*(t+2T)*gamma^2)+exp(T*gamma)*(-6 +4*T*gamma + (t-T)*(t+3*T)*gamma^2))/(2*(1-6*exp(T*gamma)+8*exp(2*T*gamma))*gamma^3)
+    exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2-2*exp(gamma*t)*(gamma*(t+T)-1)+4*exp((t+T)*gamma)*(gamma*(t+T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
+    exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
+
 end
 
 function partition_species(species)
