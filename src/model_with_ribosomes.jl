@@ -1,4 +1,4 @@
-using Plots, Statistics, Distributions
+using Plots, Statistics, Distributions, SpecialFunctions
 include("utilities.jl")
 
 function main(args)
@@ -14,58 +14,10 @@ function main(args)
 
     m_before, m_after, p_before, p_after, r_before, r_after = simulate_network()
 
-    nbins = maximum([1, Int(maximum(m_before))])
-    histogram(m_before, nbins=Int(nbins), normed=true)
-    vline!([mrna(T)], label="theoretical mean")
-    vline!([mean(m_before)], label="statistical mean")
-    xlabel!("m")
-    ylabel!("P(m)")
-    savefig(string(path, "/mrnas_before.svg"))
-
-    nbins = maximum([1, Int(maximum(m_after))])
-    histogram(m_after, nbins=Int(nbins), normed=true)
-    vline!([mrna(0)], label="theoretical mean")
-    vline!([mean(m_after)], label="statistical mean")
-    xlabel!("m")
-    ylabel!("P(m)")
-    savefig(string(path, "/mrnas_after.svg"))
-
-    nbins = maximum([1, Int(maximum(p_after))])
-    histogram(p_after, nbins=Int(nbins), normed=true)
-    vline!([p(0)], label="theoretical mean")
-    vline!([mean(p_after)], label="statistical mean")
-    xlabel!("p")
-    ylabel!("P(p)")
-    savefig(string(path, "/proteins_after.svg"))
-
-    nbins = maximum([1, Int(maximum(p_before))])
-    histogram(p_before, nbins=Int(nbins), normed=true)
-    vline!([p(T)], label="theoretical mean")
-    vline!([mean(p_before)], label="statistical mean")
-    xlabel!("p")
-    ylabel!("P(p)")
-    savefig(string(path, "/proteins_before.svg"))
-
-    nbins = maximum([1, Int(maximum(r_before))])
-    histogram(r_before, nbins=Int(nbins), normed=true)
-    vline!([rho*T*2], label="theoretical mean")
-    vline!([mean(r_before)], label="statistical mean")
-    xlabel!("r")
-    ylabel!("P(r)")
-    savefig(string(path, "/ribosomes_before.svg"))
-
-    nbins = maximum([1, Int(maximum(r_after))])
-    histogram(r_after, nbins=Int(nbins), normed=true)
-    vline!([rho*T], label="theoretical mean")
-    vline!([mean(r_after)], label="statistical mean")
-    xlabel!("r")
-    ylabel!("P(r)")
-    savefig(string(path, "/ribosomes_after.svg"))
-
-    statistical_variance = var(m_after)
-    theoretical_variance = mrna_var(0)
-
     generate_summary(m_before, m_after, p_before, p_after, r_before, r_after)
+    create_mrna_plots(m_before, m_after)
+    create_protein_plots(p_before, p_after)
+    create_ribosome_plots(r_before, r_after)
 end
 
 function generate_summary(m_before, m_after, p_before, p_after, r_before, r_after)
@@ -223,10 +175,106 @@ function generate_summary(m_before, m_after, p_before, p_after, r_before, r_afte
     end
 end
 
+function create_mrna_plots(m_before, m_after)
+    mean_before = mrna(T)
+    std_before = sqrt(mrna_var(T))
+
+    nbins = maximum([1, Int(maximum(m_before))])
+    x=collect(0:.1:nbins)
+    histogram(m_before, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, mean_before), label="poisson fit", lw=3)
+    xlabel!("m")
+    ylabel!("P(m)")
+    savefig(string(path, "/mrnas_before.svg"))
+
+    mean_after = mrna(0)
+    std_after = sqrt(mrna_var(0))
+
+    nbins = maximum([1, Int(maximum(m_after))])
+    x=collect(0:.1:nbins)
+    histogram(m_after, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_after, std_after), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, mean_after), label="poisson fit", lw=3)
+    xlabel!("m")
+    ylabel!("P(m)")
+    savefig(string(path, "/mrnas_after.svg"))
+end
+
+function create_ribosome_plots(r_before, r_after)
+    mean_before = r(T)
+    std_before = sqrt(r_var(T))
+
+    nbins = maximum([1, Int(maximum(r_before))])
+    x=collect(0:.1:nbins)
+    histogram(r_before, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, mean_before), label="poisson fit", lw=3)
+    xlabel!("r")
+    ylabel!("P(r)")
+    savefig(string(path, "/ribosomes_before.svg"))
+
+    mean_after = r(0)
+    std_after = sqrt(r_var(0))
+
+    nbins = maximum([1, Int(maximum(r_after))])
+    x=collect(0:.1:nbins)
+    histogram(r_after, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_after, std_after), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, mean_after), label="poisson fit", lw=3)
+    xlabel!("r")
+    ylabel!("P(r)")
+    savefig(string(path, "/ribosomes_after.svg"))
+end
+
+function create_protein_plots(p_before, p_after)
+    mean_before = p(T)
+    std_before = sqrt(p_var(T))
+
+    nbins = maximum([1, Int(maximum(p_before))])
+    x=collect(0:.1:nbins)
+    histogram(p_before, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, mean_before, std_before), label="negative binomial fit", lw=3)
+    xlabel!("p")
+    ylabel!("P(p)")
+    savefig(string(path, "/proteins_before.svg"))
+
+    mean_after = p(0)
+    std_after = sqrt(p_var(0))
+
+    nbins = maximum([1, Int(maximum(p_after))])
+    x=collect(0:.1:nbins)
+    histogram(p_after, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_after, std_after), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, mean_after, std_after), label="negative binomial fit", lw=3)
+    xlabel!("p")
+    ylabel!("P(p)")
+    savefig(string(path, "/proteins_after.svg"))
+end
+
+function gaussian(x, mean, std)
+    1/(std*sqrt(2*pi))*exp.(-1/2*(x.-mean).^2 ./(std^2))
+end
+
+function negative_binomial(x, mean, std)
+    p = 1-mean/std^2
+    r = mean^2/(std^2-mean)
+    return SpecialFunctions.gamma.(x .+ r) ./ (SpecialFunctions.gamma.(x .+ 1) .* SpecialFunctions.gamma.(r)) .* (1-p) .^ r .* p .^x
+end
+
+function poisson(x, lambda)
+    lambda .^ x .* exp(-1*lambda) ./ SpecialFunctions.gamma.(x .+ 1)
+end
+
+function n_choose_k(n, k)
+
+end
+
 function simulate_network()
     write(stdout, "Starting simulation")
     # This is heuristic but seems right
-    t_final = T*1000000
+    t_final = T*100000
     time_since_division = 0
     t = 0
     p_after_division = []
@@ -303,7 +351,6 @@ function mrna(t)
 end
 
 function p(t)
-    #alpha*beta*rho/(2*gamma^3*(2*exp(gamma*T)-1)) * (2 + 4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma) + 2*exp(T*gamma)*(-2 + gamma*(t^2*gamma + T*(-2 + 2*t*gamma + 3*T*gamma))))
     return alpha*beta*(2+4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma)+2*exp(T*gamma)*(-2+gamma*(t^2*gamma+T*(-2+2*t*gamma+3*T*gamma))))*rho / (2 * (-1 + 2*exp(T*gamma))*gamma^3)
 end
 
@@ -320,7 +367,7 @@ function r_var(t)
 end
 
 function p_var(t)
-return (alpha*beta*rho*exp(-gamma*t))/(18*gamma^5*(1-2*exp(gamma*T))^2)*(exp(gamma*t)*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-4*gamma*T*(3*t+4*T)-6*t+8*T)+25)-2*beta*rho*(gamma*(3*gamma*t^2*(3-2*gamma*t)+6*gamma*T^2*(7-3*gamma*t)-18*T*(gamma*t-2)*(gamma*t+1)+4*gamma^2*T^3)+18)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-4))-2))-4*exp(gamma*(t+T))*(beta*rho*(gamma*(6*gamma*t^2*(2*gamma*t-3)+9*gamma*T^2*(4*gamma*t-7)+36*T*(gamma*t-2)*(gamma*t+1)+10*gamma^2*T^3)-54)+2*alpha*beta*(3*gamma^3*t^3+9*gamma^3*t^2*T+3*gamma*t*(gamma*T*(3*gamma*T-4)-3)+gamma*T*(gamma*T*(7*gamma*T-13)+3)+13)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-3))-2))+4*exp(gamma*(t+2*T))*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-2*gamma*T*(6*t+5*T)-12*t+T)+31)+2*beta*rho*(gamma*(3*gamma*t^2*(2*gamma*t-3)+3*gamma*T^2*(6*gamma*t-7)+18*T*(gamma*t-2)*(gamma*t+1)+14*gamma^2*T^3)-36)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-2))-2))+12*exp(2*gamma*T)*(18*beta*rho+3*gamma*(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho*t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-10))-6*exp(gamma*T) *(18*beta*rho+3*gamma *(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho* t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-8))+9*alpha*beta*exp(-(gamma*(t-2*T)))*(2*gamma*(t+T)+3))
+    return (alpha*beta*rho*exp(-gamma*t))/(18*gamma^5*(1-2*exp(gamma*T))^2)*(exp(gamma*t)*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-4*gamma*T*(3*t+4*T)-6*t+8*T)+25)-2*beta*rho*(gamma*(3*gamma*t^2*(3-2*gamma*t)+6*gamma*T^2*(7-3*gamma*t)-18*T*(gamma*t-2)*(gamma*t+1)+4*gamma^2*T^3)+18)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-4))-2))-4*exp(gamma*(t+T))*(beta*rho*(gamma*(6*gamma*t^2*(2*gamma*t-3)+9*gamma*T^2*(4*gamma*t-7)+36*T*(gamma*t-2)*(gamma*t+1)+10*gamma^2*T^3)-54)+2*alpha*beta*(3*gamma^3*t^3+9*gamma^3*t^2*T+3*gamma*t*(gamma*T*(3*gamma*T-4)-3)+gamma*T*(gamma*T*(7*gamma*T-13)+3)+13)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-3))-2))+4*exp(gamma*(t+2*T))*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-2*gamma*T*(6*t+5*T)-12*t+T)+31)+2*beta*rho*(gamma*(3*gamma*t^2*(2*gamma*t-3)+3*gamma*T^2*(6*gamma*t-7)+18*T*(gamma*t-2)*(gamma*t+1)+14*gamma^2*T^3)-36)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-2))-2))+12*exp(2*gamma*T)*(18*beta*rho+3*gamma*(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho*t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-10))-6*exp(gamma*T) *(18*beta*rho+3*gamma *(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho* t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-8))+9*alpha*beta*exp(-(gamma*(t-2*T)))*(2*gamma*(t+T)+3))
 end
 
 function m_r_covar(t)
@@ -328,13 +375,11 @@ function m_r_covar(t)
 end
 
 function p_r_covar(t)
-   alpha*beta*rho/(6*gamma^3*(2*exp(gamma*T)-1))*(-3*gamma^2*(t+T)^2+2*exp(gamma*T)*(3*gamma^2*(t+T)^2 - 4*gamma*T - 4) + 6*exp(gamma*(T-t))*(gamma*(t+T)+1)+4*gamma*T+2) 
+   return alpha*beta*rho/(6*gamma^3*(2*exp(gamma*T)-1))*(-3*gamma^2*(t+T)^2+2*exp(gamma*T)*(3*gamma^2*(t+T)^2 - 4*gamma*T - 4) + 6*exp(gamma*(T-t))*(gamma*(t+T)+1)+4*gamma*T+2) 
 end
 
 function m_p_covar(t)
-    #exp(-t*gamma)*alpha*beta*rho*(2*exp(t*gamma)*(gamma*(t+T)-1)-12*exp(gamma*(t+T))*(-1 +(t+T)*gamma)+16*exp((t+2*T)*gamma)*(-1+(t+T)*gamma)-4*exp(2*T*gamma)*(-3 + 2*T*gamma + t*(t+2T)*gamma^2)+exp(T*gamma)*(-6 +4*T*gamma + (t-T)*(t+3*T)*gamma^2))/(2*(1-6*exp(T*gamma)+8*exp(2*T*gamma))*gamma^3)
-    exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2-2*exp(gamma*t)*(gamma*(t+T)-1)+4*exp((t+T)*gamma)*(gamma*(t+T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
-    exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
+    return exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
 
 end
 
