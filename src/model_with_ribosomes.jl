@@ -1,5 +1,4 @@
 using Plots, Statistics, Distributions, SpecialFunctions
-include("utilities.jl")
 
 function main(args)
     global alpha = parse(Float64, args[1])
@@ -380,7 +379,6 @@ end
 
 function m_p_covar(t)
     return exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
-
 end
 
 function partition_species(species)
