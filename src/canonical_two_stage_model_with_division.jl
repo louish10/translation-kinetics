@@ -1,5 +1,5 @@
 using Plots, Statistics, Distributions
-include("utilities.jl")
+include("canonical_two_stage_model_with_division_functions.jl")
 
 function main(args)
     global alpha = parse(Float64, args[1])
@@ -19,9 +19,9 @@ end
 
 function print_summary(p_before, p_after, m_before, m_after)
     # mRNA
-    m_zero = mrna(0)
+    m_zero = CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     A = alpha/gamma - m_zero
-    m_T = mrna(T)
+    m_T = CanonicalTwoStageModel.mrna(alpha, gamma, T, T)
     mrna_after_stat_mean = mean(m_after)
 
     mrna_after_stat_var = var(m_after)
@@ -112,13 +112,13 @@ function print_summary(p_before, p_after, m_before, m_after)
 
         approx_mrna_var_zero = mrna_variance(0)
         approx_mrna_var_T = mrna_variance(T)
-        approx_covar_T = approximate_covariance(T)
-        approx_covar_zero = approximate_covariance(0)
+        approx_covar_T = CanonicalTwoStageModel.approximate_covariance(alpha, beta, gamma, T, T)
+        approx_covar_zero = CanonicalTwoStageModel.approximate_covariance(alpha, beta, gamma, T, 0)
         c_double_prime_approx = alpha*beta/gamma * (beta/gamma*T-5*beta/(6*gamma^2)+T+1/gamma)
-        approx_protein_var_zero = approximate_protein_variance(0)
-        approx_protein_var_T = approximate_protein_variance(T)
-        approx_protein_mean_zero = approximate_protein_mean(0)
-        approx_protein_mean_T = approximate_protein_mean(T)
+        approx_protein_var_zero = CanonicalTwoStageModel.approximate_protein_variance(alpha, beta, gamma, T, 0)
+        approx_protein_var_T = CanonicalTwoStageModel.approximate_protein_variance(alpha, beta, gamma, T, T)
+        approx_protein_mean_zero = CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0)
+        approx_protein_mean_T = CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, T)
 
         write(io, "-----------\n\n")
         write(io, "Approximations\n\n")
@@ -134,7 +134,7 @@ function print_summary(p_before, p_after, m_before, m_after)
 end
 
 function F(c_prime, t)
-    m_zero = mrna(0)
+    m_zero = CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     A = alpha/gamma - m_zero
     p_zero = p(0)
     B = p_zero - beta*alpha/(gamma*delta) - A*beta/(gamma-delta)
@@ -142,55 +142,28 @@ function F(c_prime, t)
     return beta^2*(alpha/(gamma*delta*(gamma+delta))-2*A/(delta*(2*delta - gamma))*exp(-gamma*t) + 2*c_prime/(delta-gamma)*exp(-(gamma+delta)*t)) + beta*alpha/(gamma*delta) - A*beta/(2*delta-gamma)*exp(-gamma*t) + beta*delta*A/((gamma-delta)*(2*delta-gamma))*exp(-gamma*t) + B*exp(-delta*t)
 end
 
-function mrna(t)
-    return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
-end
-
 function mrna_variance(t)
     return alpha/gamma*(1-exp(-gamma* t)/(2-exp(-gamma * T)))
 end
 
 function p(t)
-    A = alpha/gamma - mrna(0)
+    A = alpha/gamma - CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     p_zero = 1/(2-exp(-delta*T))*(beta*alpha/(delta*gamma)-A*beta/(delta-gamma)*exp(-gamma*T)-(beta*alpha/(gamma*delta)+A*beta/(gamma-delta))*exp(-delta*T))
     return beta*alpha/(delta*gamma) + A*beta/(gamma-delta)*exp(-gamma*t) + (p_zero - beta*alpha/(gamma*delta)-A*beta/(gamma-delta))*exp(-delta*t)
 end
 
 function protein_variance(t)
-    A = alpha/gamma - mrna(0)
+    A = alpha/gamma - CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     c_prime = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
     c_double_prime = 1/(4-exp(-2*delta*T))*(F(c_prime, T) - 4*F(c_prime, 0) + p(T))
     return F(c_prime, t) + c_double_prime*exp(-2*delta*t)
 end
 
 function covariance(t)
-    A = alpha/gamma - mrna(0)
+    A = alpha/gamma - CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     c_prime = 1/(4-exp(-(gamma+delta)*T))*(-3*alpha/(gamma*(gamma+delta)) + (4-exp(-gamma*T))*(A/delta))
 
     return beta*(alpha/(gamma*(gamma+delta)) - A/delta*exp(-gamma*t)+ c_prime*exp(-(gamma+delta)*t))
-end
-
-function approximate_covariance(t)
-    D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
-    return beta*alpha/gamma*(1/gamma - t*exp(-gamma*t)/(2-exp(-gamma*T)) - exp(-gamma * t)*D)
-end
-
-function approximate_protein_mean(t)
-    A = alpha/gamma*(1/(2-exp(-gamma * T)))
-    c = beta*alpha*T/gamma - 2*beta*A/gamma + beta*A/gamma*exp(-gamma * T)
-    return beta*alpha/gamma * (t+T+1/gamma*(exp(-gamma*t) + exp(-gamma * T) - 2)/(2-exp(-gamma*T)))
-end
-
-function approximate_protein_variance(t)
-    c_double_prime = (approximate_F(T)- 4 * approximate_F(0) + approximate_protein_mean(T))/3
-    return approximate_F(t) + c_double_prime
-end
-
-function approximate_F(t)
-    A = alpha/gamma - mrna(0)
-    D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
-    #return 2*beta^2*alpha/gamma * (t/gamma + (gamma*t + 1)*exp(-gamma * t)/(gamma^2*(2-exp(-gamma*T))) + exp(-gamma*t)/gamma * D) + beta*alpha*t/gamma + beta*A/gamma * exp(-gamma * t)
-    return beta*alpha/gamma * ((2*beta/gamma+1)*t + exp(-gamma*t)/(2-exp(-gamma*T))*(2*beta*(gamma*t + 1)+gamma)/(gamma^2) + 2*beta*exp(-gamma*t)/gamma*D)
 end
 
 function simulate_network()
