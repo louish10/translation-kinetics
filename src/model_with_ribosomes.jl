@@ -1,4 +1,5 @@
 using Plots, Statistics, Distributions, SpecialFunctions
+include("model_with_ribosomes_functions.jl")
 
 function main(args)
     global alpha = parse(Float64, args[1])
@@ -21,8 +22,8 @@ end
 
 function generate_summary(m_before, m_after, p_before, p_after, r_before, r_after)
     # mRNA
-    m_zero = mrna(0)
-    m_T = mrna(T)
+    m_zero = ModelWithRibosomes.mrna(alpha, gamma, T, 0)
+    m_T = ModelWithRibosomes.mrna(alpha, gamma, T, T)
 
     mrna_after_stat_mean = mean(m_after)
     mrna_before_stat_mean = mean(m_before)
@@ -30,20 +31,20 @@ function generate_summary(m_before, m_after, p_before, p_after, r_before, r_afte
     mrna_after_stat_var = var(m_after)
     mrna_before_stat_var = var(m_before)
 
-    mrna_after_theory_var = mrna_var(0)
-    mrna_before_theory_var = mrna_var(T)
+    mrna_after_theory_var = ModelWithRibosomes.mrna_var(alpha, gamma, T, 0)
+    mrna_before_theory_var = ModelWithRibosomes.mrna_var(alpha, gamma, T, T)
 
     # Protein
     p_before_stat_mean = mean(p_before)
     p_after_stat_mean = mean(p_after)
 
-    p_zero = p(0)
-    p_T = p(T)
+    p_zero = ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0)
+    p_T = ModelWithRibosomes.p(alpha, beta, gamma, rho, T, T)
 
     p_after_stat_var = var(p_after)
-    p_after_theory_var = p_var(0)
+    p_after_theory_var = ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, 0)
 
-    p_before_theory_var = p_var(T)
+    p_before_theory_var = ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, T)
     p_before_stat_var = var(p_before)
 
 
@@ -51,33 +52,33 @@ function generate_summary(m_before, m_after, p_before, p_after, r_before, r_afte
     r_before_stat_mean = mean(r_before)
     r_after_stat_mean = mean(r_after)
 
-    r_zero = r(0)
-    r_T = r(T)
+    r_zero = ModelWithRibosomes.r(rho, T, 0)
+    r_T = ModelWithRibosomes.r(rho, T, T)
 
     r_after_stat_var = var(r_after)
-    r_after_theory_var = r_var(0)
+    r_after_theory_var = ModelWithRibosomes.r_var(rho, T, 0)
 
-    r_before_theory_var = r_var(T)
+    r_before_theory_var = ModelWithRibosomes.r_var(rho, T, T)
     r_before_stat_var = var(r_before)
 
     # Covariances
     m_p_stat_covar_before = cov(m_before, p_before)
     m_p_stat_covar_after = cov(m_after, p_after)
 
-    m_p_theory_covar_before = m_p_covar(T)
-    m_p_theory_covar_after = m_p_covar(0)
+    m_p_theory_covar_before = ModelWithRibosomes.m_p_covar(alpha, beta, gamma, rho, T, T)
+    m_p_theory_covar_after = ModelWithRibosomes.m_p_covar(alpha, beta, gamma, rho, T, 0)
 
     m_r_stat_covar_before = cov(m_before, r_before)
     m_r_stat_covar_after = cov(m_after, r_after)
 
-    m_r_theory_covar_before = m_r_covar(T)
-    m_r_theory_covar_after = m_r_covar(0)
+    m_r_theory_covar_before = ModelWithRibosomes.m_r_covar()
+    m_r_theory_covar_after = ModelWithRibosomes.m_r_covar()
 
     p_r_stat_covar_before = cov(p_before, r_before)
     p_r_stat_covar_after = cov(p_after, r_after)
 
-    p_r_theory_covar_before = p_r_covar(T)
-    p_r_theory_covar_after = p_r_covar(0)
+    p_r_theory_covar_before = ModelWithRibosomes.p_r_covar(alpha, beta, gamma, rho, T, T)
+    p_r_theory_covar_after = ModelWithRibosomes.p_r_covar(alpha, beta, gamma, rho, T, 0)
 
 
     filename = string(path, "/results.txt")
@@ -175,8 +176,8 @@ function generate_summary(m_before, m_after, p_before, p_after, r_before, r_afte
 end
 
 function create_mrna_plots(m_before, m_after)
-    mean_before = mrna(T)
-    std_before = sqrt(mrna_var(T))
+    mean_before = ModelWithRibosomes.mrna(alpha, gamma, T, T)
+    std_before = sqrt(ModelWithRibosomes.mrna_var(alpha, gamma, T, T))
 
     nbins = maximum([1, Int(maximum(m_before))])
     x=collect(0:.1:nbins)
@@ -187,8 +188,8 @@ function create_mrna_plots(m_before, m_after)
     ylabel!("P(m)")
     savefig(string(path, "/mrnas_before.svg"))
 
-    mean_after = mrna(0)
-    std_after = sqrt(mrna_var(0))
+    mean_after = ModelWithRibosomes.mrna(alpha, gamma, T, 0)
+    std_after = sqrt(ModelWithRibosomes.mrna_var(alpha, gamma, T, 0))
 
     nbins = maximum([1, Int(maximum(m_after))])
     x=collect(0:.1:nbins)
@@ -201,8 +202,8 @@ function create_mrna_plots(m_before, m_after)
 end
 
 function create_ribosome_plots(r_before, r_after)
-    mean_before = r(T)
-    std_before = sqrt(r_var(T))
+    mean_before = ModelWithRibosomes.r(rho, T, T)
+    std_before = sqrt(ModelWithRibosomes.r_var(rho, T, T))
 
     nbins = maximum([1, Int(maximum(r_before))])
     x=collect(0:.1:nbins)
@@ -213,8 +214,8 @@ function create_ribosome_plots(r_before, r_after)
     ylabel!("P(r)")
     savefig(string(path, "/ribosomes_before.svg"))
 
-    mean_after = r(0)
-    std_after = sqrt(r_var(0))
+    mean_after = ModelWithRibosomes.r(rho, T, 0)
+    std_after = sqrt(ModelWithRibosomes.r_var(rho, T, 0))
 
     nbins = maximum([1, Int(maximum(r_after))])
     x=collect(0:.1:nbins)
@@ -227,8 +228,8 @@ function create_ribosome_plots(r_before, r_after)
 end
 
 function create_protein_plots(p_before, p_after)
-    mean_before = p(T)
-    std_before = sqrt(p_var(T))
+    mean_before = ModelWithRibosomes.p(alpha, beta, gamma, rho, T, T)
+    std_before = sqrt(ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, T))
 
     nbins = maximum([1, Int(maximum(p_before))])
     x=collect(0:.1:nbins)
@@ -239,8 +240,8 @@ function create_protein_plots(p_before, p_after)
     ylabel!("P(p)")
     savefig(string(path, "/proteins_before.svg"))
 
-    mean_after = p(0)
-    std_after = sqrt(p_var(0))
+    mean_after = ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0)
+    std_after = sqrt(ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, 0))
 
     nbins = maximum([1, Int(maximum(p_after))])
     x=collect(0:.1:nbins)
@@ -343,42 +344,6 @@ function simulate_network()
     end
 
     return m_before_division, m_after_division, p_before_division, p_after_division, r_before_division, r_after_division
-end
-
-function mrna(t)
-    return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
-end
-
-function p(t)
-    return alpha*beta*(2+4*T*gamma - (t^2 + 2*t*T + 3*T^2)*gamma^2 + 2*exp((T-t)*gamma)*(1+(t+T)*gamma)+2*exp(T*gamma)*(-2+gamma*(t^2*gamma+T*(-2+2*t*gamma+3*T*gamma))))*rho / (2 * (-1 + 2*exp(T*gamma))*gamma^3)
-end
-
-function r(t)
-    return rho*(t+T)
-end
-
-function mrna_var(t)
-    return alpha*(exp(gamma*(T-t)) - 2*exp(gamma*T) + 1)/(gamma*(1-2*exp(gamma*T)))
-end
-
-function r_var(t)
-    return rho*(t+T)
-end
-
-function p_var(t)
-    return (alpha*beta*rho*exp(-gamma*t))/(18*gamma^5*(1-2*exp(gamma*T))^2)*(exp(gamma*t)*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-4*gamma*T*(3*t+4*T)-6*t+8*T)+25)-2*beta*rho*(gamma*(3*gamma*t^2*(3-2*gamma*t)+6*gamma*T^2*(7-3*gamma*t)-18*T*(gamma*t-2)*(gamma*t+1)+4*gamma^2*T^3)+18)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-4))-2))-4*exp(gamma*(t+T))*(beta*rho*(gamma*(6*gamma*t^2*(2*gamma*t-3)+9*gamma*T^2*(4*gamma*t-7)+36*T*(gamma*t-2)*(gamma*t+1)+10*gamma^2*T^3)-54)+2*alpha*beta*(3*gamma^3*t^3+9*gamma^3*t^2*T+3*gamma*t*(gamma*T*(3*gamma*T-4)-3)+gamma*T*(gamma*T*(7*gamma*T-13)+3)+13)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-3))-2))+4*exp(gamma*(t+2*T))*(alpha*beta*(2*gamma*(gamma^2*(9*t^2*T+3*t^3+9*t*T^2+7*T^3)-2*gamma*T*(6*t+5*T)-12*t+T)+31)+2*beta*rho*(gamma*(3*gamma*t^2*(2*gamma*t-3)+3*gamma*T^2*(6*gamma*t-7)+18*T*(gamma*t-2)*(gamma*t+1)+14*gamma^2*T^3)-36)+9*gamma^2*(gamma*(gamma*t^2+T*(2*gamma*t+3*gamma*T-2))-2))+12*exp(2*gamma*T)*(18*beta*rho+3*gamma*(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho*t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-10))-6*exp(gamma*T) *(18*beta*rho+3*gamma *(gamma+beta*gamma*rho*(3*t^2+6*t*T+2*T^2)+gamma^2*(t+T)*(beta*rho* t*(t+2*T)+1)+6*beta*rho*(t+T))+alpha*beta*(3*gamma^2*(t+T)^2-4*gamma*T-8))+9*alpha*beta*exp(-(gamma*(t-2*T)))*(2*gamma*(t+T)+3))
-end
-
-function m_r_covar(t)
-    return 0
-end
-
-function p_r_covar(t)
-   return alpha*beta*rho/(6*gamma^3*(2*exp(gamma*T)-1))*(-3*gamma^2*(t+T)^2+2*exp(gamma*T)*(3*gamma^2*(t+T)^2 - 4*gamma*T - 4) + 6*exp(gamma*(T-t))*(gamma*(t+T)+1)+4*gamma*T+2) 
-end
-
-function m_p_covar(t)
-    return exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
 end
 
 function partition_species(species)
