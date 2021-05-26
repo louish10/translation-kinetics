@@ -1,4 +1,4 @@
-using Plots
+using Plots, LaTeXStrings
 include("canonical_two_stage_model_with_division_functions.jl")
 include("model_with_ribosomes_functions.jl")
 
@@ -15,42 +15,42 @@ function main()
 
         heatmap(T, beta, difference_in_means, c = :thermal, title = "Difference in Mean Protein Number")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/protein_number_diff.svg"))
 
         heatmap(T, beta, percentage_difference_in_means, c = :thermal, title = "Percentage Difference in Mean Protein Number")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/protein_number_percentage_diff.svg"))
 
         heatmap(T, beta, difference_in_variances, c = :thermal, title = "Difference in Protein Number Variance")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/protein_variance_diff.svg"))
 
         heatmap(T, beta, fano_factor_model_1, c = :thermal, title = "Fano factor for Canonical Two Stage Model")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/fano_factor_model_1.svg"))
 
         heatmap(T, beta, fano_factor_model_2, c = :thermal, title = "Fano Factor for Model Including Ribosome Kinetics")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/fano_factor_model_2.svg"))
 
         heatmap(T, beta, fano_factor_difference, c = :thermal, title = "Difference in Fano Factor")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/fano_factor_model_diff.svg"))
 
         heatmap(T, beta, protein_model_1, c = :thermal, title = "Protein Number for Canonical Two Stage Model")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/protein_variance_model_1.svg"))
 
         heatmap(T, beta, protein_model_2, c = :thermal, title = "Protein Number for Model Including Ribosome Kinetics")
         xlabel!("T")
-        ylabel!("beta")
+        ylabel!(L"\beta")
         savefig(string(path, "/protein_variance_model_2.svg"))
     end
 end
