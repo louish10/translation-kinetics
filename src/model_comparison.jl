@@ -8,8 +8,8 @@ function main()
     global alpha = 7.0
     global gamma = 0.5
     global rho = 5.0
-    T = range(0.5, 10, length=n)
-    beta = range(0.5, 10, length=n)
+    T = range(1.5, 50, length=n)
+    beta = range(0.01, 0.5, length=n)
 
     heatmap(T, beta, difference_in_means, c = :thermal, title = "Difference in Mean Protein Number")
     xlabel!("T")

@@ -1,0 +1,88 @@
+After division
+-----------
+mRNA
+
+Mean
+Theory: 4.835497857735417
+Simulation: 4.838987377251024
+
+Variance
+Theory: 4.835497857735418
+Simulation: 4.806033273569868
+-----------
+Protein
+
+Mean
+Theory: 1319.4263924719785
+Simulation: 1320.1492707634711
+
+Variance
+Theory: 80214.61040239275
+Simulation: 160468.0036644815
+-----------
+Ribosome
+
+Mean
+Theory: 7.5
+Simulation: 7.495230182484309
+
+Variance
+Theory: 7.5
+Simulation: 7.5800364089566745
+-----------
+Covariances
+
+mRNA, protein
+Theory: -700.0
+Simulation: 278.77468037629296
+mRNA, ribosome
+Theory: 0
+Simulation: 0.005543429150333405
+protein, ribosome
+Theory: 439.80879749065997
+Simulation: 449.6827276573982
+-----------
+
+Before division
+-----------
+mRNA
+
+Mean
+Theory: 9.670995715470834
+Simulation: 9.675432186508374
+
+Variance
+Theory: 9.670995715470836
+Simulation: 9.634148964096811
+-----------
+Protein
+
+Mean
+Theory: 2638.852784943957
+Simulation: 2640.018999189181
+
+Variance
+Theory: 318219.5888246256
+Simulation: 639026.801436861
+-----------
+Ribosome
+
+Mean
+Theory: 15.0
+Simulation: 14.993843782220042
+
+Variance
+Theory: 15.0
+Simulation: 15.104859095538133
+-----------
+Covariances
+
+mRNA, protein
+Theory: 669.4805269857036
+Simulation: 1133.2063908157309
+mRNA, ribosome
+Theory: 0
+Simulation: 0.06246762492445531
+protein, ribosome
+Theory: 1759.235189962638
+Simulation: 1781.5734317454112
