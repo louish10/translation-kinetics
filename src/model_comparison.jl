@@ -16,6 +16,11 @@ function main()
     ylabel!("beta")
     savefig(string(path, "/protein_number_diff.svg"))
 
+    heatmap(T, beta, percentage_difference_in_means, c = :thermal, title = "Percentage Difference in Mean Protein Number")
+    xlabel!("T")
+    ylabel!("beta")
+    savefig(string(path, "/protein_number_percentage_diff.svg"))
+
     heatmap(T, beta, difference_in_variances, c = :thermal, title = "Difference in Protein Number Variance")
     xlabel!("T")
     ylabel!("beta")
@@ -64,10 +69,10 @@ function protein_var_model_2(T, beta)
 end
 
 function difference_in_means(T, beta)
-    return abs((ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))/ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) )
+    return abs(ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))
 end
 
-function percentage_difference_in_mean(T, beta)
+function percentage_difference_in_means(T, beta)
     return abs((ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))/ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) )
 end
 
