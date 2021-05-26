@@ -57,7 +57,7 @@ function protein_model_1(T, beta)
 end
 
 function protein_model_2(T, beta)
-    ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0)
+    ModelWithRibosomes.p(alpha, model_2_beta(beta, T), gamma, rho, T, 0)
 end
 
 function protein_var_model_1(T, beta)
@@ -65,19 +65,19 @@ function protein_var_model_1(T, beta)
 end
 
 function protein_var_model_2(T, beta)
-    ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, 0)
+    ModelWithRibosomes.p_var(alpha, model_2_beta(beta, T), gamma, rho, T, 0)
 end
 
 function difference_in_means(T, beta)
-    return abs(ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))
+    return abs(ModelWithRibosomes.p(alpha, model_2_beta(beta, T), gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))
 end
 
 function percentage_difference_in_means(T, beta)
-    return abs((ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))/ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0) )
+    return abs((ModelWithRibosomes.p(alpha, model_2_beta(beta, T), gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, 0))/ModelWithRibosomes.p(alpha, model_2_beta(beta, T), gamma, rho, T, 0) )
 end
 
 function difference_in_variances(T, beta)
-    return abs(ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_variance(alpha, beta, gamma, T, 0))
+    return abs(ModelWithRibosomes.p_var(alpha, model_2_beta(beta, T), gamma, rho, T, 0) - CanonicalTwoStageModel.approximate_protein_variance(alpha, beta, gamma, T, 0))
 end
 
 function fano_factor_model_1(T, beta)
@@ -85,11 +85,15 @@ function fano_factor_model_1(T, beta)
 end
 
 function fano_factor_model_2(T, beta)
-    return ModelWithRibosomes.p_var(alpha, beta, gamma, rho, T, 0)/ModelWithRibosomes.p(alpha, beta, gamma, rho, T, 0)
+    return ModelWithRibosomes.p_var(alpha, model_2_beta(beta, T), gamma, rho, T, 0)/ModelWithRibosomes.p(alpha, model_2_beta(beta, T), gamma, rho, T, 0)
 end
 
 function fano_factor_difference(T, beta)
     return fano_factor_model_1(T,beta) - fano_factor_model_2(T, beta)
+end
+
+function model_2_beta(beta, T)
+    return 2/3*beta/(rho*T)
 end
 
 main()
