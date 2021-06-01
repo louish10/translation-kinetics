@@ -10,7 +10,8 @@ function main()
     rhoT = range(0.1, 50.0, length=n)
     betaT = range(0.1, 50.0, length=n)
 
-    for T in [0.1, 0.5, 1.0, 10.0]
+    for i in [0.1, 0.5, 1.0, 10.0]
+        T = i
         path = mkpath("data/model-comparison/T-$T")
 
         heatmap(rhoT, betaT, difference_in_means, c = :thermal, title = "Relative Difference in Mean Protein Number")
