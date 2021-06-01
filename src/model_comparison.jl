@@ -3,14 +3,14 @@ include("canonical_two_stage_model_with_division_functions.jl")
 include("model_with_ribosomes_functions.jl")
 
 function main()
-    global n = 50
+    global n = 500
     global alpha = 7.0
     global gamma = 0.5
     global T = 1.0
     rhoT = range(0.1, 50.0, length=n)
     betaT = range(0.1, 50.0, length=n)
 
-    for i in [0.1, 0.5, 1.0, 10.0]
+    for i in [0.1, 0.5, 1.0, 10.0, 50.0, 100.0, 150.0]
         T = i
         path = mkpath("data/model-comparison/T-$T")
 
