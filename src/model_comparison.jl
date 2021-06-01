@@ -59,7 +59,7 @@ function protein_model_2(rhoT, betaT)
 end
 
 function protein_var_model_1(rhoT, betaT)
-    CanonicalTwoStageModel.approximate_protein_variance(alpha, betaT, gamma, T, T)
+    CanonicalTwoStageModel.approximate_protein_variance(alpha, betaT/T, gamma, T, T)
 end
 
 function protein_var_model_2(rhoT, betaT)
