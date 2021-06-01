@@ -3,7 +3,7 @@ include("canonical_two_stage_model_with_division_functions.jl")
 include("model_with_ribosomes_functions.jl")
 
 function main()
-    global n = 500
+    global n = 50
     global alpha = 7.0
     global gamma = 0.5
     global T = 1.0
