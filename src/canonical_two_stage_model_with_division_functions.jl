@@ -26,4 +26,12 @@ module CanonicalTwoStageModel
         D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
         return beta*alpha/gamma * ((2*beta/gamma+1)*t + exp(-gamma*t)/(2-exp(-gamma*T))*(2*beta*(gamma*t + 1)+gamma)/(gamma^2) + 2*beta*exp(-gamma*t)/gamma*D)
     end
+
+    function p_time_av(alpha, beta, gamma, T)
+        return alpha*beta*(1+1/(1-2*exp(gamma*T))+gamma*T*(-2+3*T*gamma))/(2*T*gamma^3)
+    end
+
+    function p_var_time_av(alpha, beta, gamma, T)
+        (alpha  *beta  *(alpha  *beta *(gamma *T*(gamma *T*(gamma *T*(72-55*gamma* T)-108)+30)-2*exp(2 *gamma *T)*(gamma*T*(2 *gamma *T*(gamma *T*(55 *gamma *T-72)+54)-21)+6)+4*exp(gamma *T)*(gamma *T*(gamma *T*(gamma *T*(55 *gamma *T-72)+81)-18)+6)-12)+2 *gamma^2*T*(2*exp(gamma *T)-1)*(-2 *beta*(gamma *T*(3 *gamma *T+4)+12)+4 *beta *exp(gamma *T)*(gamma*T*(5*gamma*T-4)+6)+3*gamma *(gamma *T*(2-3 *gamma *T)+exp(gamma *T)*(2 *gamma *T*(3 *gamma *T-2)+2)-2))))/(12 \gamma ^6*(T-2*T*exp(gamma *T))^2)
+    end
 end

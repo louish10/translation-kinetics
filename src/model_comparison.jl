@@ -52,39 +52,39 @@ function main()
 end
 
 function protein_model_1(rhoT, betaT)
-    CanonicalTwoStageModel.approximate_protein_mean(alpha, betaT/T, gamma, T, T)
+    CanonicalTwoStageModel.p_time_av(alpha, betaT/T, gamma, T)
 end
 
 function protein_model_2(rhoT, betaT)
-    ModelWithRibosomes.p(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)
+    ModelWithRibosomes.p_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)
 end
 
 function protein_var_model_1(rhoT, betaT)
-    CanonicalTwoStageModel.approximate_protein_variance(alpha, betaT/T, gamma, T, T)
+    CanonicalTwoStageModel.p_var_time_av(alpha, betaT/T, gamma, T)
 end
 
 function protein_var_model_2(rhoT, betaT)
-    ModelWithRibosomes.p_var(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)
+    ModelWithRibosomes.p_var_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)
 end
 
 function difference_in_means(rhoT, betaT)
-    mod1 =CanonicalTwoStageModel.approximate_protein_mean(alpha, betaT/T, gamma, T, T)
-    mod2 =ModelWithRibosomes.p(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)
+    mod1 =CanonicalTwoStageModel.p_time_av(alpha, betaT/T, gamma, T)
+    mod2 =ModelWithRibosomes.p_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)
     return abs((mod1-mod2)/mod2) 
 end
 
 function difference_in_variances(rhoT, betaT)
-    mod1 = CanonicalTwoStageModel.approximate_protein_variance(alpha, betaT/T, gamma, T, T)
-    mod2 = ModelWithRibosomes.p_var(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)
+    mod1 = CanonicalTwoStageModel.p_var_time_av(alpha, betaT/T, gamma, T)
+    mod2 = ModelWithRibosomes.p_var_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)
     return abs((mod1-mod2)/mod2) 
 end
 
 function fano_factor_model_1(rhoT, betaT)
-    return CanonicalTwoStageModel.approximate_protein_variance(alpha, betaT/T, gamma, T, T)/CanonicalTwoStageModel.approximate_protein_mean(alpha, betaT/T, gamma, T, T)
+    return CanonicalTwoStageModel.p_var_time_av(alpha, betaT/T, gamma, T)/CanonicalTwoStageModel.p_time_av(alpha, betaT/T, gamma, T)
 end
 
 function fano_factor_model_2(rhoT, betaT)
-    return ModelWithRibosomes.p_var(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)/ModelWithRibosomes.p(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T, T)
+    return ModelWithRibosomes.p_var_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)/ModelWithRibosomes.p_time_av(alpha, model_2_beta(betaT/T, rhoT), gamma, rhoT/T, T)
 end
 
 function fano_factor_difference(rhoT, betaT)

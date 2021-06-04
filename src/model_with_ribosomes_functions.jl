@@ -35,4 +35,12 @@ module ModelWithRibosomes
     function m_p_covar(alpha, beta, gamma, rho, T, t)
         return exp(-t*gamma)*alpha*beta*rho*(-exp(gamma*T)*t*(t+2*T)*gamma^2+2*exp(gamma*t)*(gamma*(t+T)-1)*(2*exp(gamma*T)-1))/(2*(2*exp(T*gamma)-1)*gamma^3)
     end
+
+    function p_time_av(alpha, beta, gamma, rho, T)
+        return alpha*beta*(-12 + T*gamma *(-6+T*gamma*(12-13*T*gamma))+2*exp(gamma*T)*(6+gamma*T*(-3+gamma*T*(-6 + 13*gamma*T))))*rho/(6*(-1+2*exp(gamma*T))*T*gamma^4)
+    end
+
+    function p_var_time_av(alpha, beta, gamma, rho, T)
+       -(alpha*beta*rho*exp(gamma*T)*(-8*beta*rho*(alpha*(gamma^3*T^3*(gamma*T*(2*gamma*T*(431*gamma*T-585)+675)+1665)+270*gamma*T+180)-5*gamma^2*T*(gamma*T*(gamma*T*(gamma*T*(43*gamma*T-33)+144)+351)+324))+gamma*T*sinh(gamma*T)*(5*gamma^2*(-72*gamma+alpha*beta*T*(gamma*T*(3*gamma*T*(56-61*gamma*T)+172)-204)+18*gamma^2*T*(gamma*T*(4-13*gamma*T)+6))+6*beta*rho*(alpha*(gamma*T*(gamma*T*(2*gamma*T*(gamma*T*(431*gamma*T-260)-480)+695)+225)-45)+5*gamma*(gamma*T*(gamma*T*(gamma*T*(88-73*gamma*T)+156)+84)-144)))+20*gamma^2*T*(alpha*beta*(gamma*T*(gamma*T*(gamma*T*(61*gamma*T-76)+75)+106)-30)+3*gamma^2*(gamma*T*(2*gamma*T*(13*gamma*T-9)+3)+18))+5*cosh(gamma*T)*(alpha*beta*gamma^2*T*(120-gamma*T*(gamma*T*(gamma*T*(305*gamma*T-344)+156)+424))+2*alpha*beta*rho*(gamma*T*(gamma*T*(gamma*T*(2*gamma*T*(gamma*T*(431*gamma*T-468)+72)+1089)-45)+216)+144)-2*beta*gamma^2*rho*T*(gamma*T*(gamma*T*(gamma*T*(269*gamma*T-264)+180)+972)+1296)-6*gamma^4*T*(gamma*T*(gamma*T*(65*gamma*T-36)-6)+36))))/(180*gamma^8*(T-2*T*exp(gamma*T))^2) 
+    end
 end
