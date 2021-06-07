@@ -1,0 +1,5 @@
+Protein
+
+Mean
+Theory: 1244.141975308643
+Simulation: 1245.8319538683177
