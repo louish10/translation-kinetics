@@ -40,7 +40,15 @@ module ModelWithRibosomes
         return alpha*beta*(-12 + T*gamma *(-6+T*gamma*(12-13*T*gamma))+2*exp(gamma*T)*(6+gamma*T*(-3+gamma*T*(-6 + 13*gamma*T))))*rho/(6*(-1+2*exp(gamma*T))*T*gamma^4)
     end
 
+    function m_time_av(alpha, gamma, T)
+        alpha*(gamma*T*(1-2*exp(gamma*T)) - 1 + exp(gamma*T))/(T*gamma^2*(1-2*exp(gamma*T)))
+    end
+
+    function m_var_time_av(alpha, gamma, T)
+        return (alpha  *(alpha  *(exp(gamma *T)-1)*(gamma *T+exp(gamma *T)*(gamma *T-2)+2)+2*gamma ^2*T *(2*exp(gamma *T)-1)*(gamma *(-T)+exp(gamma *T)*(2 *gamma *T-1)+1)))/(2*gamma ^4 *(T-2*T*exp(gamma *T))^2)
+    end
+
     function p_var_time_av(alpha, beta, gamma, rho, T)
-       (alpha*beta*rho*(34*alpha*beta*gamma^6*rho*T^6*(1-2*exp(gamma*T))^2+5*beta*gamma^6*T^5*(2*exp(gamma*T)-1)*(-61*alpha-50*rho+122*(alpha+2*rho)*exp(gamma*T))-10*gamma^4*T^4*(2*exp(gamma*T)-1)*(-44*alpha*beta*gamma+60*alpha*beta*rho+39*gamma^3+2*exp(gamma*T)*(4*alpha*beta*(8*gamma+3*rho)+66*beta*gamma*rho-39*gamma^3))-10*gamma^3*T^3*(alpha*beta*(-82*gamma-168*rho+(4*gamma+15*rho)*exp(2*gamma*T)+6*(25*gamma+66*rho)*exp(gamma*T))+36*gamma*(2*exp(gamma*T)-1)*(beta*rho*(2*exp(gamma*T)+9)+gamma^2*(exp(gamma*T)-1)))+10*gamma^2*T^2*(alpha*beta*(55*gamma+162*rho-4*(53*gamma+162*rho)*exp(gamma*T)+(157*gamma+297*rho)*exp(2*gamma*T))-18*gamma*(2*exp(gamma*T)-1)*(34*beta*rho+gamma^2+exp(gamma*T)*(gamma^2-10*beta*rho)))+15*gamma*T*(exp(gamma*T)-1)*(alpha*beta*(20*gamma+15*rho+(159*rho-20*gamma)*exp(gamma*T))+24*gamma*(2*exp(gamma*T)-1)*(12*beta*rho+gamma^2))-720*alpha*beta*rho*(exp(gamma*T)-1)^2))/(180*gamma^8*(T-2*T*exp(gamma*T))^2)
+        (alpha*beta*rho*(34*alpha*beta*gamma^6*rho*T^6*(1-2*exp(gamma*T))^2+5*beta*gamma^6*T^5*(2*exp(gamma*T)-1)*(-61*alpha-50*rho+122*(alpha+2*rho)exp(gamma*T))-10*gamma^4*T^4*(2*exp(gamma*T)-1)*(-44*alpha*beta*gamma+60*alpha*beta*rho+39*gamma^3+2*exp(gamma*T)*(4*alpha*beta*(8*gamma+3*rho)+66*beta*gamma*rho-39*gamma^3))-10*gamma^3*T^3*(alpha*beta*(-82*gamma-168*rho+(4*gamma+15*rho)*exp(2*gamma*T)+6*(25*gamma+66*rho)*exp(gamma*T))+36*gamma*(2*exp(gamma*T)-1)*(beta*rho*(2*exp(gamma*T)+9)+gamma^2*(exp(gamma*T)-1)))+10*gamma^2*T^2*(alpha*beta*(55*gamma+162*rho-4*(53*gamma+162*rho)*exp(gamma*T)+(157*gamma+297*rho)*exp(2*gamma*T))-18*gamma*(2*exp(gamma*T)-1)*(34*beta*rho+gamma^2+exp(gamma*T)*(gamma^2-10*beta*rho)))+15*gamma*T*(exp(gamma*T)-1)*(alpha*beta*(20*gamma+15*rho+(159*rho-20*gamma)*exp(gamma*T))+24*gamma*(2*exp(gamma*T)-1)*(12*beta*rho+gamma^2))-720*alpha*beta*rho*(exp(gamma*T)-1)^2))/(180*gamma^8*(T-2*T*exp(gamma*T))^2)
     end
 end
