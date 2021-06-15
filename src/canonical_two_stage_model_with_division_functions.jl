@@ -27,8 +27,12 @@ module CanonicalTwoStageModel
         return beta*alpha/gamma * ((2*beta/gamma+1)*t + exp(-gamma*t)/(2-exp(-gamma*T))*(2*beta*(gamma*t + 1)+gamma)/(gamma^2) + 2*beta*exp(-gamma*t)/gamma*D)
     end
 
+    function m_time_av(alpha, gamma, T)
+        alpha*(gamma*T*(1-2*exp(gamma*T)) - 1 + exp(gamma*T))/(T*gamma^2*(1-2*exp(gamma*T)))
+    end
+
     function m_var_time_av(alpha, gamma, T)
-        (alpha*(alpha*(exp(gamma*T)-1)*(gamma*T+exp(gamma*T)*(gamma*T-2)+2)+2*gamma^2*T*(2*exp(gamma*T)-1)*(gamma*(-T)+exp(gamma*T)*(2*gamma*T-1)+1)))/(2*gamma^4*(T-2*T*exp(gamma*T))^2)
+        return (alpha  *(alpha  *(exp(gamma *T)-1)*(gamma *T+exp(gamma *T)*(gamma *T-2)+2)+2*gamma ^2*T *(2*exp(gamma *T)-1)*(gamma *(-T)+exp(gamma *T)*(2 *gamma *T-1)+1)))/(2*gamma ^4 *(T-2*T*exp(gamma *T))^2)
     end
 
     function p_time_av(alpha, beta, gamma, T)
@@ -36,6 +40,7 @@ module CanonicalTwoStageModel
     end
 
     function p_var_time_av(alpha, beta, gamma, T)
-        return (alpha  *beta  *(alpha  *beta*(gamma *T *(gamma^3*T^3+12 *gamma*T+18)-4*exp(gamma *T) *(gamma *T*(gamma^3*T^3+3 *gamma*T+18)-6)+2*exp(2 *gamma *T)*(gamma *T *(2 *gamma^3*T^3-12* gamma *T+27)-6)-12)+2*gamma ^2*T *(2*exp(gamma* T)-1)*(-2 *beta *(gamma *T*(3 *gamma*T+4)+12)+4 *beta *exp(gamma *T)*(gamma *T*(5*gamma *T-4)+6)+3 *gamma  *(gamma *T*(2-3 *gamma *T)+exp(gamma *T)*(2 *gamma *T*(3*gamma *T-2)+2)-2))))/(12*gamma^6 *(T-2*T*exp(gamma *T))^2)
+        #return (alpha*beta*(alpha*beta*(gamma*T*(gamma^3*T^3+12*gamma*T+18)-4*exp(gamma*T)*(gamma*T*(gamma^3*T^3+3*gamma*T+18)-6)+2*exp(2*gamma*T)*(gamma*T*(2*gamma^3*T^3-12*gamma*T+27)-6)-12)+2*gamma^2*T*(2*exp(gamma*T)-1)*(-2*beta*(gamma*T*(3*gamma*T+4)+12)+4*beta*exp(gamma*T)*(gamma*T*(5*gamma*T-4)+6)+3*gamma*(gamma*T*(2-3*gamma*T)+exp(gamma*T)*(2*gamma*T*(3*gamma*T-2)+2)-2))))/(12*gamma^6*(T-2*T*exp(gamma*T))^2)
+        return (alpha  *beta  *(4 *gamma ^2*T *(21*beta +3 *gamma +10 *beta  *gamma ^2*T^2+9*gamma ^3*T^2-20 *beta  *gamma *T+(9*beta *(2 *gamma *T-3))/(4*exp(gamma *T)-1)+(12 *beta +3 *gamma +22 *beta *gamma *T)/(1-2*exp(gamma *T))-6 *gamma ^2*T)+alpha  *beta  *(2 *gamma ^4*T^4-12 *gamma ^2*T^2+27 *gamma *T-(3*(3*gamma *T+2))/((1-2*exp(gamma *T))^2)+(12-18 *gamma *T*(2 *gamma *T+1))/(2*exp(gamma *T)-1)-6)))/(24*gamma ^6*T^2)
     end
 end
