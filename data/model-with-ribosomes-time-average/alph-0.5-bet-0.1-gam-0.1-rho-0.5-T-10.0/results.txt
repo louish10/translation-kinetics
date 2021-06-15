@@ -1,0 +1,8 @@
+Protein
+
+Mean
+Theory: 33.214178908145506
+Simulation: 34.235202331349925
+Variance
+Theory: 232.95318227101478
+Simulation: 34.340968599470834
