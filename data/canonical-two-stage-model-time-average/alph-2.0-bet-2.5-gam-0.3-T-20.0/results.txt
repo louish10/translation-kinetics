@@ -1,0 +1,18 @@
+Protein
+
+Mean
+Theory: 449.0683291016318
+Simulation: 449.1107966426288
+Variance
+Theory: 12071.046490156017
+Simulation: 12077.668230767915
+
+
+Mrna
+
+Mean
+Theory: 6.111800507804184
+Simulation: 6.113772632283622
+Variance
+Theory: 6.7321436910460095
+Simulation: 6.716737576486651

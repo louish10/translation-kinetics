@@ -1,8 +1,0 @@
-Protein
-
-Mean
-Theory: 864.2446133935762
-Simulation: 864.757010840437
-Variance
-Theory: Inf
-Simulation: 33946.93104738861
