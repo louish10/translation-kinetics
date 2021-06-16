@@ -4,13 +4,13 @@ include("model_with_ribosomes_functions.jl")
 
 function main()
     global n = 500
-    global alpha = 7.0
-    global gamma = 0.5
-    global T = 1.0
+    global alpha = 3.42
+    global gamma = 0.06
+    global T = 27.5
 
-    for i in [0.1, 0.5, 1.0, 10.0, 50.0, 100.0, 150.0]
-        rhoT = range(0.5*T, 30.0*T, length=n)
-        betaT = range(0.5*T, 30.0*T, length=n)
+    for i in [1.0, 10.0, 27.5, 50.0]
+        rhoT = range(0.5*T, 100.0*T, length=n)
+        betaT = range(0.5*T, 100.0*T, length=n)
         T = i
         path = mkpath("data/model-comparison/T-$T")
 
