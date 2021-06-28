@@ -9,12 +9,14 @@ function main(args)
 
     global path = mkpath("data/canonical-two-stage-model-time-average/alph-$alpha-bet-$beta-gam-$gamma-T-$T")
 
-    p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages = simulate_network()
+    p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements = simulate_network()
 
-    generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages)
+    generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements)
+
+    create_protein_plots(random_protein_measurements)
 end
 
-function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages)
+function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements)
     filename = string(path, "/results.txt")
     touch(filename)
 
@@ -23,6 +25,9 @@ function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_av
 
     stat_var = mean(p_squared_time_averages) - mean(p_time_averages).^2
     theory_var = CanonicalTwoStageModel.p_var_time_av(alpha, beta, gamma, T)
+
+    measurements_mean = mean(random_protein_measurements)
+    measurements_variance = var(random_protein_measurements)
     
     mrna_stat_mean = mean(mrna_time_averages)
     mrna_theory_mean = CanonicalTwoStageModel.m_time_av(alpha, gamma, T)
@@ -38,6 +43,9 @@ function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_av
         write(io, "Variance\n")
         write(io, "Theory: $theory_var\n")
         write(io, "Simulation: $stat_var\n")
+        write(io, "Random Measurements:\n")
+        write(io, "Mean: $measurements_mean\n")
+        write(io, "Variance: $measurements_variance\n")
 
         write(io, "\n\nMrna\n\n")
         write(io, "Mean\n")
@@ -47,6 +55,21 @@ function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_av
         write(io, "Theory: $mrna_theory_var\n")
         write(io, "Simulation: $mrna_stat_var\n")
     end
+end
+
+
+function create_protein_plots(p)
+    mean_before = CanonicalTwoStageModel.p_time_av(alpha, beta, gamma, T)
+    std_before = sqrt(CanonicalTwoStageModel.p_var_time_av(alpha, beta, gamma, T))
+
+    nbins = maximum([1, Int(ceil(maximum(p)))])
+    x=collect(0:.1:nbins)
+    histogram(p, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, mean_before, std_before), label="negative binomial fit", lw=3)
+    xlabel!("p")
+    ylabel!("P(p)")
+    savefig(string(path, "/protein_copy_number.svg"))
 end
 
 function simulate_network()
@@ -77,9 +100,13 @@ function simulate_network()
     last_protein_time = 0
     last_mrna_time = 0
 
+    last_measurement_time = 0
+    random_protein_measurements = []
+
     steady_state = false
 
     while true
+
 
         if t%1000 == 0
             write(stdout, "\r$t of $t_final")
@@ -91,6 +118,11 @@ function simulate_network()
         dt = 1/a*log(1/(1-rand()))
         t = t + dt
         time_since_division += dt
+
+        if steady_state && t - last_measurement_time > 2000.
+            last_measurements_time = t - rand()*T
+            append!(random_protein_measurements, species[2])
+        end
 
         if t>t_final/10
             steady_state = true
@@ -152,7 +184,7 @@ function simulate_network()
     end
     write(stdout, "\n")
 
-    return p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages
+    return p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements
 end
 
 function partition_species(species)
@@ -160,5 +192,16 @@ function partition_species(species)
     dist2 = Binomial(species[2])
     return [rand(dist1), rand(dist2)]
 end
+
+function negative_binomial(x, mean, std)
+    p = 1-mean/std^2
+    r = mean^2/(std^2-mean)
+    return SpecialFunctions.gamma.(x .+ r) ./ (SpecialFunctions.gamma.(x .+ 1) .* SpecialFunctions.gamma.(r)) .* (1-p) .^ r .* p .^x
+end
+
+function gaussian(x, mean, std)
+    1/(std*sqrt(2*pi))*exp.(-1/2*(x.-mean).^2 ./(std^2))
+end
+
 
 main(ARGS)
