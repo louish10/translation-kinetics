@@ -55,4 +55,8 @@ module ModelWithRibosomes
     function limit_of_differences(alpha, beta, gamma, T)
         return (beta *(alpha  *(4*exp(gamma *T)-1) *(gamma *T *(gamma *T*(gamma *T *(gamma ^3*T^3+780*gamma *T+4290)+8100)-900)-4*exp(gamma *T) *(gamma *T *(gamma *T*(gamma *T *(gamma ^3*T^3+555*gamma *T+1530)+7290)+2160)-1440)+2*exp(2 *gamma *T) *(gamma *T*(gamma *T *(gamma *T *(2*gamma ^3*T^3+660 *gamma *T-3945)+6750)+4770)-1440)-2880)+20 *gamma ^2*T *(gamma *T*(gamma *T*(gamma *T*(13 *gamma *T+60)-6)-1152)+exp(gamma *T)*(2 *gamma *T*(gamma *T*(31 *gamma *T*(3-4 *gamma *T)+87)+3888)+3888)-8*exp(3 *gamma *T)*(gamma *T*(gamma *T*(2 *gamma *T*(13 *gamma*T-90)+591)-540)-648)+4*exp(2 *gamma *T)*(gamma *T*(gamma *T*(gamma *T*(137 *gamma *T-333)+510)-3276)-2160)-432))-90*gamma ^4*T^2 *(-6*exp(gamma *T)+8*exp(2*gamma *T)+1) *(gamma *(-T)*(gamma *T*(gamma *T+6)+6)+2*exp(gamma *T)*(gamma *T*(gamma *T*(gamma *T-6)+15)-12)+24))/(135 *gamma ^2*T^2*(beta *(alpha  *(gamma *(-T) *(gamma ^3*T^3+12 *gamma*T+18)+8*exp(3 *gamma *T) *(gamma *T*(2 *gamma ^3*T^3-12 *gamma*T+27)-6)+4*exp(gamma *T)*(gamma *T *(2 *gamma ^3*T^3+15*gamma *T+36)-18)-2*exp(2 *gamma*T) *(gamma *T *(10 *gamma ^3*T^3+12*gamma *T+171)-54)+12)+4*gamma ^2*T *(2*exp(gamma *T)-1)*(gamma *T*(5 *gamma *T-8)+exp(2 *gamma *T)*(40 *gamma *T*(gamma *T-2)+84)-2*exp(gamma* T)*(gamma *T*(15 *gamma *T-17)+57)+30))+6 *gamma ^3*T*(-6*exp(gamma *T)+8*exp(2 *gamma *T)+1) *(gamma *T*(2-3 *gamma *T)+exp(gamma *T)*(2 *gamma *T*(3 *gamma*T-2)+2)-2)))
     end
+
+    function alpha(m, gamma, T)
+        return (2*exp(T*gamma) - 1)*m*T*gamma^2/(1-exp(gamma*T)-T*gamma + 2*exp(gamma*T)*T*gamma)
+    end
 end
