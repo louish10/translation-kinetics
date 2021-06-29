@@ -1,0 +1,2 @@
+Time average: 4.745917406432672
+Random sample average: 4.99741
