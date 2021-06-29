@@ -9,14 +9,15 @@ function main(args)
 
     global path = mkpath("data/canonical-two-stage-model-time-average/alph-$alpha-bet-$beta-gam-$gamma-T-$T")
 
-    p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements = simulate_network()
+    p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements, random_mrna_measurements = simulate_network()
 
-    generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements)
+    generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements, random_mrna_measurements)
 
     create_protein_plots(random_protein_measurements)
+    create_mrna_plots(random_mrna_measurements)
 end
 
-function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements)
+function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements, random_mrna_measurements)
     filename = string(path, "/results.txt")
     touch(filename)
 
@@ -34,6 +35,9 @@ function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_av
 
     mrna_stat_var = mean(mrna_squared_time_averages) - mean(mrna_time_averages).^2
     mrna_theory_var = CanonicalTwoStageModel.m_var_time_av(alpha, gamma, T)
+
+    mrna_measurements_mean = mean(random_mrna_measurements)
+    mrna_measurements_variance = var(random_mrna_measurements)
 
     open(filename, "w") do io
         write(io, "Protein\n\n")
@@ -54,6 +58,9 @@ function generate_summary(p_time_averages, p_squared_time_averages, mrna_time_av
         write(io, "Variance\n")
         write(io, "Theory: $mrna_theory_var\n")
         write(io, "Simulation: $mrna_stat_var\n")
+        write(io, "Random Measurements:\n")
+        write(io, "Mean: $mrna_measurements_mean\n")
+        write(io, "Variance: $mrna_measurements_variance\n")
     end
 end
 
@@ -70,6 +77,20 @@ function create_protein_plots(p)
     xlabel!("p")
     ylabel!("P(p)")
     savefig(string(path, "/protein_copy_number.svg"))
+end
+
+function create_mrna_plots(m)
+    mean_before = CanonicalTwoStageModel.m_time_av(alpha, gamma, T)
+    std_before = sqrt(CanonicalTwoStageModel.m_var_time_av(alpha, gamma, T))
+
+    nbins = maximum([1, Int(ceil(maximum(m)))])
+    x=collect(0:.1:nbins)
+    histogram(m, nbins=Int(nbins), normed=true, linecolor=:match)
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, mean_before, std_before), label="negative binomial fit", lw=3)
+    xlabel!("m")
+    ylabel!("P(m)")
+    savefig(string(path, "/mrna_copy_number.svg"))
 end
 
 function simulate_network()
@@ -102,6 +123,7 @@ function simulate_network()
 
     last_measurement_time = 0
     random_protein_measurements = []
+    random_mrna_measurements = []
 
     steady_state = false
 
@@ -119,9 +141,10 @@ function simulate_network()
         t = t + dt
         time_since_division += dt
 
-        if steady_state && t - last_measurement_time > 2000.
-            last_measurements_time = t - rand()*T
+        if steady_state && rand() < 1 - exp(-0.0005*t) #t - last_measurement_time > 20000.
+            last_measurements_time = t
             append!(random_protein_measurements, species[2])
+            append!(random_mrna_measurements, species[1])
         end
 
         if t>t_final/10
@@ -133,7 +156,6 @@ function simulate_network()
         end
 
         if time_since_division > T
-            
             t = t - t%T
             time_since_division = 0
 
@@ -184,7 +206,7 @@ function simulate_network()
     end
     write(stdout, "\n")
 
-    return p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements
+    return p_time_averages, p_squared_time_averages, mrna_time_averages, mrna_squared_time_averages, random_protein_measurements, random_mrna_measurements
 end
 
 function partition_species(species)
