@@ -5,6 +5,10 @@ module CanonicalTwoStageModel
         return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
     end
 
+    function mrna_var(alpha, gamma, T, t)
+        return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
+    end
+
     function approximate_covariance(alpha, beta, gamma, T, t)
         D = 1/(4-exp(-gamma*T))*(3/gamma + T*exp(-gamma * T)/(2-exp(-gamma*T)))
         return beta*alpha/gamma*(1/gamma - t*exp(-gamma*t)/(2-exp(-gamma*T)) - exp(-gamma * t)*D)

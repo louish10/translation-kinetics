@@ -16,6 +16,7 @@ function main(args)
 
     print_summary(p_before, p_after, m_before, m_after)
 
+    create_mrna_plot(m_before)
     create_protein_plot(p_before)
 end
 
@@ -133,6 +134,20 @@ function print_summary(p_before, p_after, m_before, m_after)
         write(io, "protein mean before division: $approx_protein_mean_T\n")
         write(io, "protein mean after division: $approx_protein_mean_zero\n")
     end
+end
+
+function create_mrna_plot(m)
+    mean_before = CanonicalTwoStageModel.mrna(alpha, gamma, T, T)
+    std_before = sqrt(CanonicalTwoStageModel.mrna_var(alpha, gamma, T, T))
+
+    nbins = maximum([1, Int(maximum(m))])
+    x=collect(0:.1:nbins)
+    histogram(m, nbins=Int(nbins), normed=true, linecolor=:match, label="SSA")
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, mean_before), label="poisson fit", lw=3)
+    xlabel!("p")
+    ylabel!("freq")
+    savefig(string(path, "/mrna.svg"))
 end
 
 function create_protein_plot(p)
@@ -268,6 +283,10 @@ function negative_binomial(x, mean, std)
     p = 1-mean/std^2
     r = mean^2/(std^2-mean)
     return SpecialFunctions.gamma.(x .+ r) ./ (SpecialFunctions.gamma.(x .+ 1) .* SpecialFunctions.gamma.(r)) .* (1-p) .^ r .* p .^x
+end
+
+function poisson(x, lambda)
+    lambda .^ x .* exp(-1*lambda) ./ SpecialFunctions.gamma.(x .+ 1)
 end
 
 main(ARGS)
