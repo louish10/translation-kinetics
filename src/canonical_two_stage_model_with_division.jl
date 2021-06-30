@@ -1,4 +1,4 @@
-using Plots, Statistics, Distributions
+using Plots, Statistics, Distributions, SpecialFunctions
 include("canonical_two_stage_model_with_division_functions.jl")
 
 function main(args)
@@ -15,6 +15,8 @@ function main(args)
     write(stdout, "\n")
 
     print_summary(p_before, p_after, m_before, m_after)
+
+    create_protein_plot(p_before)
 end
 
 function print_summary(p_before, p_after, m_before, m_after)
@@ -133,6 +135,20 @@ function print_summary(p_before, p_after, m_before, m_after)
     end
 end
 
+function create_protein_plot(p)
+    mean_before = CanonicalTwoStageModel.approximate_protein_mean(alpha, beta, gamma, T, T)
+    std_before = sqrt(CanonicalTwoStageModel.approximate_protein_variance(alpha, beta, gamma, T, T))
+
+    nbins = maximum([1, Int(maximum(p))])
+    x=collect(0:.1:nbins)
+    histogram(p, nbins=Int(nbins), normed=true, linecolor=:match, label="SSA")
+    plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, mean_before, std_before), label="negative binomial fit", lw=3)
+    xlabel!("p")
+    ylabel!("freq")
+    savefig(string(path, "/protein.svg"))
+end
+
 function F(c_prime, t)
     m_zero = CanonicalTwoStageModel.mrna(alpha, gamma, T, 0)
     A = alpha/gamma - m_zero
@@ -169,7 +185,7 @@ end
 function simulate_network()
     write(stdout, "Starting simulation")
     # This is heuristic but seems right
-    t_final = T*1000000
+    t_final = T*100000
     time_since_division = 0
     t = 0
     m = 0
@@ -241,6 +257,17 @@ function partition_species(species)
     dist1 = Binomial(species[1])
     dist2 = Binomial(species[2])
     return [rand(dist1), rand(dist2)]
+end
+
+
+function gaussian(x, mean, std)
+    1/(std*sqrt(2*pi))*exp.(-1/2*(x.-mean).^2 ./(std^2))
+end
+
+function negative_binomial(x, mean, std)
+    p = 1-mean/std^2
+    r = mean^2/(std^2-mean)
+    return SpecialFunctions.gamma.(x .+ r) ./ (SpecialFunctions.gamma.(x .+ 1) .* SpecialFunctions.gamma.(r)) .* (1-p) .^ r .* p .^x
 end
 
 main(ARGS)
