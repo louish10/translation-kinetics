@@ -4,7 +4,7 @@ function main(args)
     global path = mkpath("data/simple-birth-death-process")
 
     global alpha = 5.0
-    global gamma = 1.0
+    global gamma = 0.1
     global T = 10.0
 
     time_averaged_measurements = simulate_time_average()
@@ -107,7 +107,7 @@ end
 function simulate_random_measurements()
     write(stdout, "Starting simulation")
     t_final = T*100
-    N = 100_000
+    N = 10_000
     measurements = []
 
     write(stdout, "\n")
