@@ -30,15 +30,19 @@ function main(args)
     protein_std = sqrt(alpha*beta*(beta+delta+gamma)/(gamma*delta*(delta+gamma)))
 
     plot!(x, gaussian(x, protein_mean, protein_std), label="gaussian fit", lw=3)
-    plot!(x, negative_binomial(x, protein_mean, protein_std), label="poisson fit", lw=3)
+    plot!(x, negative_binomial(x, protein_mean, protein_std), label="negative binomial fit", lw=3)
     savefig(string(path, "/translation_proteins.svg"))
 
+    mrna_mean = alpha/gamma
+    mrna_std = sqrt(alpha/gamma)
     nbins = Int(maximum(mrnas))
     histogram(mrnas, nbins=Int(nbins), normed=true)
     vline!([alpha/gamma], label="theoretical mean")
     vline!([mean(mrnas)], label="statistical mean")
     xlabel!("m")
     ylabel!("P(m)")
+    plot!(x, gaussian(x, mrna_mean, mrna_std), label="gaussian fit", lw=3)
+    plot!(x, poisson(x, protein_mean), label="poisson fit", lw=3)
     savefig(string(path, "/translation_mrnas.svg"))
 
     print_summary(path, n_simulations, proteins, mrnas, alpha, beta, gamma, delta)
