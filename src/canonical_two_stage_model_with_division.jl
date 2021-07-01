@@ -145,7 +145,7 @@ function create_mrna_plot(m)
     histogram(m, nbins=Int(nbins), normed=true, linecolor=:match, label="SSA")
     plot!(x, gaussian(x, mean_before, std_before), label="gaussian fit", lw=3)
     plot!(x, poisson(x, mean_before), label="poisson fit", lw=3)
-    xlabel!("p")
+    xlabel!("m")
     ylabel!("freq")
     savefig(string(path, "/mrna.svg"))
 end

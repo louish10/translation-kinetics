@@ -4,24 +4,24 @@ mRNA
 
 Mean
 Theory: 0.99999999999943
-Simulation: 1.0003303336369733
+Simulation: 0.9985084935785143
 
 Variance
 Theory: 0.99999999999943
-Simulation: 0.9962660823939429
+Simulation: 0.999927703913425
 -----------
 Protein
 
 Mean
 Theory: NaN
-Simulation: 5.430064365008659
+Simulation: 5.404558604190232
 
 Variance
 Theory: NaN
-Simulation: 5.785943108832376
+Simulation: 5.773516627076121
 -----------
 Covariance
-Theory: 0.04133023559985643
+Theory: 0.053207063525021074
 Simulation: NaN
 -----------
 
@@ -31,24 +31,24 @@ mRNA
 
 Mean
 Theory: 1.99999999999886
-Simulation: 2.0003103134165507
+Simulation: 1.9958257840418823
 
 Variance
 Theory: 1.99999999999886
-Simulation: 1.9987486274027766
+Simulation: 2.003596261706395
 -----------
 Protein
 
 Mean
 Theory: NaN
-Simulation: 10.844412856985555
+Simulation: 10.796564530175477
 
 Variance
 Theory: NaN
-Simulation: 12.290323220045694
+Simulation: 12.200290105375048
 -----------
 Covariance
-Theory: 0.17547721877749348
+Theory: 0.21474070961463596
 Simulation: NaN
 -----------
 

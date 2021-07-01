@@ -4,43 +4,43 @@ mRNA
 
 Mean
 Theory: 1.2499999998256581
-Simulation: 1.2496921891110022
+Simulation: 1.2521646863331966
 
 Variance
 Theory: 1.2499999998256581
-Simulation: 1.254416284958821
+Simulation: 1.2460181323608133
 -----------
 Protein
 
 Mean
-Theory: 11.164062500073003
-Simulation: 11.162113734872221
+Theory: 11.164062500073001
+Simulation: 11.164406050110612
 
 Variance
-Theory: 16.612672255197758
-Simulation: 16.728959219040828
+Theory: 16.61267225519775
+Simulation: 16.465793059250224
 -----------
 Ribosome
 
 Mean
 Theory: 11.0
-Simulation: 11.001661678295077
+Simulation: 10.98605591647564
 
 Variance
 Theory: 11.0
-Simulation: 11.070649303904045
+Simulation: 10.80663853021732
 -----------
 Covariances
 
 mRNA, protein
-Theory: 0.3281249999999999
-Simulation: 0.16185744456691975
+Theory: 0.32812499999999994
+Simulation: 0.1536912369783386
 mRNA, ribosome
 Theory: 0
-Simulation: -0.022747691679439654
+Simulation: 0.014417359787607147
 protein, ribosome
 Theory: 3.7213541666910013
-Simulation: 3.799986877815393
+Simulation: 3.5451662458488036
 -----------
 
 Before division
@@ -49,40 +49,40 @@ mRNA
 
 Mean
 Theory: 2.4999999996513163
-Simulation: 2.5023373607343418
+Simulation: 2.5037988368251933
 
 Variance
 Theory: 2.4999999996513163
-Simulation: 2.501133198124772
+Simulation: 2.4926155512765558
 -----------
 Protein
 
 Mean
-Theory: 22.328125000146006
-Simulation: 22.31154466010671
+Theory: 22.328125000146013
+Simulation: 22.323927166438104
 
 Variance
-Theory: 44.12256402064501
-Simulation: 44.50770581536661
+Theory: 44.12256402064498
+Simulation: 43.76768020274743
 -----------
 Ribosome
 
 Mean
 Theory: 22.0
-Simulation: 22.018238420805012
+Simulation: 21.985705562618243
 
 Variance
 Theory: 22.0
-Simulation: 22.43002632282219
+Simulation: 21.65280173320203
 -----------
 Covariances
 
 mRNA, protein
-Theory: 0.6718749984178484
-Simulation: 0.6464569292865217
+Theory: 0.6718749984178486
+Simulation: 0.6005933015709684
 mRNA, ribosome
 Theory: 0
-Simulation: -0.029963149124686922
+Simulation: -0.02828460290509876
 protein, ribosome
 Theory: 14.885416666764005
-Simulation: 15.110226086901521
+Simulation: 14.549766441707808

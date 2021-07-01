@@ -1,4 +1,4 @@
-using Plots, Statistics
+using Plots, Statistics, SpecialFunctions
 
 function main(args)
     alpha = parse(Float64, args[1])
@@ -23,10 +23,14 @@ function main(args)
     write(stdout, "\n")
     nbins = maximum([1, Int(maximum(proteins))])
     histogram(proteins, nbins=Int(nbins), normed=true)
-    vline!([alpha*beta/(gamma*delta)], label="theoretical mean")
-    vline!([mean(proteins)], label="statistical mean")
     xlabel!("p")
     ylabel!("P(p)")
+    x=collect(0:.1:nbins)
+    protein_mean = alpha*beta/(gamma*delta)
+    protein_std = sqrt(alpha*beta*(beta+delta+gamma)/(gamma*delta*(delta+gamma)))
+
+    plot!(x, gaussian(x, protein_mean, protein_std), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, protein_mean, protein_std), label="poisson fit", lw=3)
     savefig(string(path, "/translation_proteins.svg"))
 
     nbins = Int(maximum(mrnas))
@@ -131,4 +135,17 @@ function simulate_network(alpha, beta, gamma, delta)
     return species[1], species[2]
 end
 
+function gaussian(x, mean, std)
+    1/(std*sqrt(2*pi))*exp.(-1/2*(x.-mean).^2 ./(std^2))
+end
+
+function negative_binomial(x, mean, std)
+    p = 1-mean/std^2
+    r = mean^2/(std^2-mean)
+    return SpecialFunctions.gamma.(x .+ r) ./ (SpecialFunctions.gamma.(x .+ 1) .* SpecialFunctions.gamma.(r)) .* (1-p) .^ r .* p .^x
+end
+
+function poisson(x, lambda)
+    lambda .^ x .* exp(-1*lambda) ./ SpecialFunctions.gamma.(x .+ 1)
+end
 main(ARGS)
