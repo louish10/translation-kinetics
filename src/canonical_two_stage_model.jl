@@ -1,4 +1,5 @@
 using Plots, Statistics, SpecialFunctions
+include("simple_canonical_model_functions.jl")
 
 function main(args)
     alpha = parse(Float64, args[1])
@@ -26,11 +27,11 @@ function main(args)
     xlabel!("p")
     ylabel!("P(p)")
     x=collect(0:.1:nbins)
-    protein_mean = alpha*beta/(gamma*delta)
-    protein_std = sqrt(alpha*beta*(beta+delta+gamma)/(gamma*delta*(delta+gamma)))
+    protein_mean = beta*alpha/(delta*gamma)
+    protein_var = beta*alpha/(delta*gamma)*(1+beta/(delta+gamma))
 
-    plot!(x, gaussian(x, protein_mean, protein_std), label="gaussian fit", lw=3)
-    plot!(x, negative_binomial(x, protein_mean, protein_std), label="negative binomial fit", lw=3)
+    plot!(x, gaussian(x, protein_mean, sqrt(protein_var)), label="gaussian fit", lw=3)
+    plot!(x, negative_binomial(x, protein_mean, sqrt(protein_var)), label="negative binomial fit", lw=3)
     savefig(string(path, "/translation_proteins.svg"))
 
     mrna_mean = alpha/gamma
