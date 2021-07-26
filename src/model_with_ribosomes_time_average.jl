@@ -53,7 +53,7 @@ end
 function simulate_network()
     write(stdout, "Starting simulation")
     # This is heuristic but seems right
-    t_final = T*100000
+    t_final = T*1000
     time_since_division = 0
     t = 0
 
@@ -83,9 +83,7 @@ function simulate_network()
 
     while true
 
-        if t%1000 == 0
-            write(stdout, "\r$t of $t_final")
-        end
+        write(stdout, "\r$t of $t_final")
 
         instantaneous_propensities = map(f -> f(species), propensities)
         a = sum(instantaneous_propensities)

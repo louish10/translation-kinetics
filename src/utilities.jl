@@ -1,5 +1,7 @@
 module Utilities
-    using Statistics
+    using Statistics, Distributions
+    export print_summary, partition_species
+
     function print_summary(path, n_simulations, proteins, mrnas, alpha, beta, gamma, delta)
         protein_mean = mean(proteins)
         protein_var = var(proteins)
@@ -46,5 +48,16 @@ module Utilities
         end
     end
 
-    export print_summary
+
+    function partition_species(species)
+        N = length(species)
+        partitioned_species = zeros(N)
+
+        for i in 1:N
+            dist = Binomial(species[i])
+            partitioned_species[i] = rand(dist)
+        end
+
+        return partitioned_species
+    end
 end
