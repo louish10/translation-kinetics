@@ -2,7 +2,7 @@ module CanonicalTwoStageModel
     export mrna, approximate_protein_variance, approximate_protein_mean, approximate_covariance, alpha, beta
 
     function mrna(alpha, gamma, T, t)
-        return alpha/gamma*(1-exp(-gamma * t)/(2-exp(-gamma*T)))
+        return alpha ./ gamma .* (1 .- exp.(-gamma .* t)./(2 .- exp.(-gamma.*T)))
     end
 
     function mrna_var(alpha, gamma, T, t)
