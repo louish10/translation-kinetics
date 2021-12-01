@@ -47,6 +47,37 @@ module PolysomeModelA
 end
 
 module PolysomeModelB
+    function m1(k1,k2)
+        k1/k2
+    end
+
+    function r(k7,k8)
+        k7/k8
+    end
+
+    function r1(k1, k2, k3, k4, k5, k6, k7, k8)
+        return k1*k3*k7/(k2*k4*k8 + k2*k5*k8)
+    end
+    
+    function p1(k1, k2, k3, k4, k5, k6, k7, k8)
+        return k1*k3*k5*k7/(k2*k4*k6*k8+k2*k5*k6*k8)
+    end
+
+    function m1_var(k1,k2)
+        k1/k2
+    end
+
+    function r_var(k7,k8)
+        k7/k8
+    end
+
+    function r1_var(k1,k2,k3,k4,k5,k7,k8)
+        return k1*k3*k7/(k2*k4*k8+k2*k5*k8)
+    end
+
+    function p1_var(k1,k2,k3,k4,k5,k6,k7,k8)
+        return (k1*k3*k5*k7*(k1*k3*k6*(k5+k6)*k8+k2^2*(k4+k5+k6)*k8*(k6+k8)+k2*k6*(k4+k5+k6)*k8*(k6+k8)+k2*k3*(k5+k6)*(k6*k7+(k1+k7)*k8)))/(k2*(k4+ k5)*k6*k8*(k1*k3*k6^2*k8+k2^2*(k4+k5+k6)*k8*(k6+k8)+k2*k6*(k3*k6*k7+k3*(k1+k7)*k8+(k4+k5+k6)*k8*(k6+k8))))
+    end
 
 end
 
