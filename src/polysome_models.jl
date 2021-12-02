@@ -1,5 +1,5 @@
 module PolysomeModelA
-   export m1, m2, r, r1
+   export m1, m2, r, r1, m1_var, r_var, r1_var, p1_var
 
     function m1(k1, k2)
         return k1/k2
@@ -41,8 +41,31 @@ module PolysomeModelA
         return k1*k3*k7/(k2*k4*k8+k2*k5*k8)
     end
 
-    function p1_var(k1,k2,k3,k4,k5,k6,k7,k8)
-    return (k1*k3*k5*k7*(k1*k3*k6*(k5+k6)*k8+k2^2*(k4+k5+k6)*k8*(k6+k8)+k2*k6*(k4+k5+k6)*k8*(k6+k8)+k2*k3*(k5+k6)*(k6*k7+(k1+k7)*k8)))/(k2*(k4+ k5)*k6*k8*(k1*k3*k6^2*k8+k2^2*(k4+k5+k6)*k8*(k6+k8)+k2*k6*(k3*k6*k7+k3*(k1+k7)*k8+(k4+k5+k6)*k8*(k6+k8))))
+    function p1_var(k1,k2,k3,k4,k5,k6,k7,k8, k1p, k2p, k3p, k4p, k5p)
+    return (k1*k3p*k5*k7*(k1*k3*k6*(k5+k6)*k8*(k2p*k3p*k6*k7 + 
+        k2p*(k2p+k6)*(k4p+k5p+k6)*k8) + 
+     k2^2*(k4+k5+k6)*k8*(k2p*k3p*k6^2*k7+ 
+        k6*((k2p+k6)*(k1p*k3p+k2p*(k4p+k5p+k6))+ 
+           k2p*k3p*k7)*k8+k2p*(k2p+k6)*(k4p+k5p+k6)*k8^2)+ 
+     k2*(k1p*k3p*k6^2*k8*(k3*(k5+k6)*k7+k6*(k4+k5+k6)*k8)+ 
+        k2p^2*(k4p+k5p+k6)*k8*(k6*(k4+k5+k6)*k8*(k6+k8)+ 
+           k3*(k5+k6)*(k6*k7+(k1 + k7)*k8))+ 
+        k2p*k6*(k6*(k4+k5+k6)*k8*(k3p*k6*k7+ 
+              k3p*(k1p+k7)*k8+(k4p+k5p+k6)*k8*(k6+k8)) + 
+           k3*(k5+k6)*((k4p+k5p+k6)*k8*(k6*k7+(k1+k7)*k8) + 
+              k3p*k7*(k6*k7 +(k1+k1p+k7)*k8))))))/(k2*(k4+ 
+     k5)*k6*k8*(k1*k3*k6^2*k8*(k2p*k3p*k6*k7+ 
+        k2p*(k2p+k6)*(k4p+k5p+k6)*k8)+ 
+     k2^2*(k4+k5+k6)*k8*(k2p*k3p*k6^2*k7+ 
+        k6*((k2p+k6)*(k1p*k3p+k2p*(k4p+k5p+k6))+ 
+           k2p*k3p*k7)*k8+k2p*(k2p+k6)*(k4p+k5p+k6)*k8^2)+ 
+     k2*k6*(k1p*k3p*k6^2*k8*(k3*k7+(k4+k5+k6)*k8)+ 
+        k2p^2*(k4p+k5p+k6)*k8*(k3*k6*k7+ 
+           k3*(k1+k7)*k8+(k4+k5+k6)*k8*(k6+k8))+ 
+        k2p*k6*((k4+k5+k6)*k8*(k3p*k6*k7+ 
+              k3p*(k1p+k7)*k8+(k4p+k5p+k6)*k8*(k6+k8)) + 
+           k3*((k4p+k5p+k6)*k8*(k6*k7+(k1+k7)*k8) + 
+              k3p*k7*(k6*k7+(k1+k1p+k7)*k8))))))
     end
 end
 
