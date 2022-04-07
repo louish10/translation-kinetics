@@ -67,6 +67,10 @@ module PolysomeModelA
            k3*((k4p+k5p+k6)*k8*(k6*k7+(k1+k7)*k8) + 
               k3p*k7*(k6*k7+(k1+k1p+k7)*k8))))))
     end
+
+    function p1_fano()
+        return 
+    end
 end
 
 module PolysomeModelB
