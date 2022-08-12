@@ -17,6 +17,9 @@ end
 DiffEqBase.remake(prob::LNAProblem; u0=prob.u0, p=prob.p) = LNAProblem(prob.rn, u0, p, prob.J, prob.D)
 
 function LNAProblem(rn::ReactionSystem, u0, p=DiffEqBase.NullParameters(); combinatoric_ratelaw=true)
+    if length(u0) < length(species(rn))
+        error("u0 length error. Expected array of length $(length(u0)). Got $(length(species(rn))).")
+    end
     states = Catalyst.get_states(rn)
     eqs = Catalyst.get_eqs(rn)
     fs = [ Catalyst.oderatelaw(rx; combinatoric_ratelaw=combinatoric_ratelaw) for rx in eqs ]
@@ -41,7 +44,7 @@ end
 
 DiffEqBase.solve(prob::LNAProblem, p=prob.p; kwargs...) = solve(remake(prob; p=p); kwargs...)
 
-function DiffEqBase.solve(prob::LNAProblem; solver=SSRootfind())        
+function DiffEqBase.solve(prob::LNAProblem; solver=SSRootfind())
     ssprob = SteadyStateProblem(prob.rn, prob.u0, prob.p)
     u = solve(ssprob, solver)
     
