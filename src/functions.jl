@@ -150,6 +150,11 @@ function negative_binomial_ys(xs, mean, var)
     return Distributions.pdf(nb, xs)
 end
 
+function poisson_ys(xs, mean)
+    pois = Poisson(mean)
+    return Distributions.pdf(pois, xs)
+end
+
 function log_likelihood_can(m_data::Vector, p_data::Vector, k1::Float64, k2::Float64, k3::Float64, k6::Float64)
     rn_can = rn_can_f()
     prob = LNAProblem(rn_can, zeros(length(species(rn_can))), [k1, k2, k3, k6])
@@ -329,4 +334,17 @@ function log_likelihood_whole_cell(data, ps)
     - log_likelihood
     
     return likelihood
+end
+
+function log_likelihood_whole_cell(p_data::Vector, ps::Vector)
+    rn = generate_rn(10)
+    prob = LNAProblem(rn, zeros(length(species(rn))), ps)
+    sol = solve(prob)
+    lnameans = mean(sol)
+    lnacovs = StatsBase.cov(sol)
+    
+    norm = Normal(lnameans[4], sqrt(lnacovs[4,4]))
+    
+    
+    -loglikelihood(norm, p_data)
 end
